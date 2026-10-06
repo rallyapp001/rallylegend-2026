@@ -2,1865 +2,914 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#080808">
-
-<title>Rallylegend 2026 • Interactive Map</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rallylegend 2026 - Mappa PS</title>
 
 <link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
-
-:root{
-  --red:#e10600;
-  --dark:#080808;
-  --card:#151515;
-  --card2:#202020;
-  --text:#fff;
-  --muted:#aaa;
-}
-
-html,
-body{
-  margin:0;
-  padding:0;
-  background:var(--dark);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-}
+*{box-sizing:border-box}
 
 body{
-  padding-bottom:70px;
+ margin:0;
+ font-family:Arial,Helvetica,sans-serif;
+ background:#111;
+ color:#fff;
 }
 
 header{
-  position:sticky;
-  top:0;
-  z-index:3000;
-  background:#090909;
-  border-bottom:1px solid #333;
-  padding:15px;
+ background:#d90000;
+ padding:14px 16px;
+ position:sticky;
+ top:0;
+ z-index:1000;
+ box-shadow:0 2px 8px #000;
 }
 
-.logo{
-  font-size:24px;
-  font-weight:900;
-  letter-spacing:1px;
+header h1{
+ margin:0;
+ font-size:21px;
 }
 
-.logo span{
-  color:var(--red);
-}
-
-.subtitle{
-  color:#aaa;
-  font-size:13px;
-  margin-top:4px;
+header p{
+ margin:4px 0 0;
+ font-size:13px;
 }
 
 nav{
-  display:flex;
-  gap:7px;
-  overflow-x:auto;
-  padding:9px;
-  background:#111;
-  position:sticky;
-  top:73px;
-  z-index:2900;
+ display:flex;
+ gap:6px;
+ overflow-x:auto;
+ padding:8px;
+ background:#1b1b1b;
+ position:sticky;
+ top:67px;
+ z-index:999;
 }
 
 nav button{
-  flex:none;
-  border:1px solid #444;
-  background:#1b1b1b;
-  color:white;
-  border-radius:20px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-size:14px;
-}
-
-nav button:hover{
-  background:#333;
+ border:0;
+ background:#333;
+ color:#fff;
+ padding:9px 13px;
+ border-radius:8px;
+ white-space:nowrap;
+ cursor:pointer;
 }
 
 nav button.active{
-  background:var(--red);
-  border-color:var(--red);
+ background:#e00000;
 }
 
 .page{
-  display:none;
-  padding:12px;
-  padding-bottom:90px;
-  max-width:1200px;
-  margin:auto;
+ display:none;
+ padding:12px;
 }
 
 .page.active{
-  display:block;
+ display:block;
 }
 
 .card{
-  background:var(--card);
-  border:1px solid #2c2c2c;
-  border-radius:16px;
-  padding:15px;
-  margin-bottom:12px;
+ background:#1d1d1d;
+ border-radius:14px;
+ padding:15px;
+ margin-bottom:12px;
+ box-shadow:0 2px 8px #0005;
 }
 
-h1,
-h2,
-h3{
-  margin-top:0;
+.card h2{
+ margin-top:0;
 }
 
 .muted{
-  color:var(--muted);
+ color:#aaa;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:10px;
+#map{
+ width:100%;
+ height:72vh;
+ min-height:500px;
+ border-radius:14px;
+ overflow:hidden;
 }
 
-.stat{
-  background:var(--card2);
-  padding:14px;
-  border-radius:12px;
+.stage-buttons{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
+ margin-bottom:12px;
 }
 
-.stat strong{
-  display:block;
-  font-size:24px;
+.stage-buttons button{
+ background:#292929;
+ color:white;
+ border:1px solid #444;
+ border-radius:10px;
+ padding:11px 6px;
+ font-weight:bold;
+ cursor:pointer;
 }
 
-input,
-select{
-  width:100%;
-  padding:13px;
-  background:#0e0e0e;
-  color:#fff;
-  border:1px solid #444;
-  border-radius:10px;
-  margin-bottom:10px;
+.stage-buttons button.active{
+ background:#d90000;
+ border-color:#ff4444;
 }
 
-button{
-  font-family:inherit;
+.stage-info{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:8px;
 }
 
-button.action{
-  width:100%;
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  background:var(--red);
-  color:white;
-  font-weight:bold;
-  margin-top:8px;
-  cursor:pointer;
+.info{
+ background:#292929;
+ padding:10px;
+ border-radius:9px;
 }
 
-button.action:hover{
-  filter:brightness(1.15);
-}
-
-button.secondary{
-  background:#292929;
-}
-
-button.secondary:hover{
-  background:#3a3a3a;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:7px;
-  background:#292929;
-  font-size:12px;
-  margin:2px;
-}
-
-.badge.red{
-  background:#6d0905;
-}
-
-.badge.green{
-  background:#155c32;
-}
-
-#mapbox{
-  width:100%;
-  height:68vh;
-  min-height:450px;
-  border-radius:15px;
-  overflow:hidden;
-  background:#222;
+.info strong{
+ display:block;
+ color:#fff;
+ margin-bottom:3px;
 }
 
 .stage-card{
-  position:relative;
+ background:#222;
+ border-radius:12px;
+ padding:13px;
+ margin-bottom:10px;
 }
 
-.star{
-  position:absolute;
-  right:12px;
-  top:10px;
-  border:0;
-  background:none;
-  color:#777;
-  font-size:28px;
-  cursor:pointer;
+.stage-card h3{
+ margin:0 0 6px;
+ color:#ff3333;
 }
 
-.star.on{
-  color:#ffd400;
-}
-
-.stage-line{
-  height:8px;
-  border-radius:10px;
-  background:var(--red);
-  margin:10px 0;
+.stage-card button{
+ background:#d90000;
+ color:#fff;
+ border:0;
+ border-radius:8px;
+ padding:9px 12px;
+ cursor:pointer;
 }
 
 .legend{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+ display:flex;
+ flex-wrap:wrap;
+ gap:8px;
+ font-size:13px;
+ color:#ccc;
+ margin-top:10px;
 }
 
 .legend span{
-  padding:7px 9px;
-  border-radius:8px;
-  background:#222;
-  font-size:12px;
+ background:#292929;
+ padding:7px 9px;
+ border-radius:8px;
 }
 
-.legend i{
-  display:inline-block;
-  width:18px;
-  height:5px;
-  margin-right:5px;
-  vertical-align:middle;
-  border-radius:5px;
+.leaflet-popup-content{
+ color:#111;
 }
 
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:4000;
-  display:flex;
-  justify-content:space-around;
-  background:#111;
-  border-top:1px solid #333;
-  padding:8px 4px;
+.gps{
+ background:#0066cc!important;
 }
 
-.bottom button{
-  border:0;
-  background:none;
-  color:#aaa;
-  font-size:11px;
-  cursor:pointer;
+footer{
+ text-align:center;
+ color:#777;
+ padding:25px;
+ font-size:12px;
 }
-
-.bottom button:hover,
-.bottom button.active{
-  color:#fff;
-}
-
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip{
-  background:#151515;
-  color:#fff;
-}
-
-.popup-btn{
-  background:var(--red);
-  color:#fff;
-  border:0;
-  border-radius:7px;
-  padding:8px;
-  cursor:pointer;
-}
-
-.route-label{
-  background:#111;
-  color:#fff;
-  border:1px solid #555;
-  border-radius:6px;
-  padding:3px 6px;
-  font-weight:bold;
-}
-
-@media(min-width:800px){
-
-  .bottom{
-    display:none;
-  }
-
-  body{
-    padding-bottom:0;
-  }
-
-}
-
 </style>
 </head>
 
 <body>
 
 <header>
-
-  <div class="logo">
-    RALLY<span>LEGEND</span> 2026
-  </div>
-
-  <div class="subtitle">
-    San Marino • 8–11 ottobre 2026
-  </div>
-
+<h1>🏁 Rallylegend 2026</h1>
+<p>Mappa interattiva delle Prove Speciali</p>
 </header>
 
-
-<nav id="topNav">
-
-  <button class="nav-btn active" data-page="home">
-    🏠 Home
-  </button>
-
-  <button class="nav-btn" data-page="map">
-    🗺️ Mappa
-  </button>
-
-  <button class="nav-btn" data-page="stages">
-    🏁 Prove
-  </button>
-
-  <button class="nav-btn" data-page="shuttle">
-    🚌 Navette
-  </button>
-
-  <button class="nav-btn" data-page="program">
-    📅 Programma
-  </button>
-
-  <button class="nav-btn" data-page="fav">
-    ⭐ Preferiti
-  </button>
-
+<nav>
+<button class="active" onclick="showPage('mappa',this)">🗺️ Mappa</button>
+<button onclick="showPage('prove',this)">🏁 Prove</button>
+<button onclick="showPage('programma',this)">📅 Programma</button>
+<button onclick="showPage('gps',this)">📍 GPS</button>
 </nav>
 
+<!-- ================= MAPPA ================= -->
 
-<!-- HOME -->
+<section id="mappa" class="page active">
 
-<section id="home" class="page active">
+<div class="card">
 
-  <div class="card">
+<h2>🗺️ Tracciati delle Prove Speciali</h2>
 
-    <h1>🏁 Rallylegend 2026</h1>
+<p class="muted">
+Seleziona una prova. Il percorso viene evidenziato direttamente
+sulla mappa, senza aprire Rally-Maps o altre mappe esterne.
+</p>
 
-    <p class="muted">
-      La guida interattiva per seguire le prove speciali,
-      le navette e gli spostamenti del Rallylegend.
-    </p>
+<div id="stageButtons" class="stage-buttons"></div>
 
-    <div class="grid">
-
-      <div class="stat">
-        <strong>11</strong>
-        prove
-      </div>
-
-      <div class="stat">
-        <strong>72,96</strong>
-        km
-      </div>
-
-      <div class="stat">
-        <strong>8–11</strong>
-        ottobre
-      </div>
-
-      <div class="stat">
-        <strong>2026</strong>
-        edizione
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>🗺️ Mappa interattiva</h3>
-
-    <p class="muted">
-      Le prove speciali vengono evidenziate con una linea rossa
-      sopra la viabilità normale.
-    </p>
-
-    <button class="action" id="openMapBtn">
-      APRI LA MAPPA
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>🚌 Navette ufficiali</h3>
-
-    <p class="muted">
-      Il servizio navetta ufficiale collega il pubblico alle
-      prove speciali.
-    </p>
-
-    <button class="action" id="openShuttleBtn">
-      VEDI NAVETTE
-    </button>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>📍 La mia posizione</h3>
-
-    <button class="action" id="locateBtn">
-      TROVA LA MIA POSIZIONE
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- MAPPA -->
-
-<section id="map" class="page">
-
-  <div class="card">
-
-    <h2>🗺️ Mappa Rallylegend</h2>
-
-    <select id="mapFilter">
-
-      <option value="all">
-        Tutto
-      </option>
-
-      <option value="stages">
-        Solo prove
-      </option>
-
-      <option value="shuttle">
-        Solo navette
-      </option>
-
-      <option value="parking">
-        Solo parcheggi
-      </option>
-
-    </select>
-
-
-    <div class="legend">
-
-      <span>
-        <i style="background:#e10600"></i>
-        Prova speciale
-      </span>
-
-      <span>🏁 Partenza</span>
-      <span>🏆 Arrivo</span>
-      <span>🚌 Navetta</span>
-      <span>🅿️ Parcheggio</span>
-
-    </div>
-
-  </div>
-
-
-  <div id="mapbox"></div>
-
-</section>
-
-
-<!-- PROVE -->
-
-<section id="stages" class="page">
-
-  <div class="card">
-
-    <h2>🏁 Prove speciali</h2>
-
-    <input
-      id="search"
-      placeholder="🔎 Cerca prova..."
-    >
-
-    <select id="day">
-
-      <option value="all">
-        Tutti i giorni
-      </option>
-
-      <option value="ven">
-        Venerdì 9
-      </option>
-
-      <option value="sab">
-        Sabato 10
-      </option>
-
-      <option value="dom">
-        Domenica 11
-      </option>
-
-    </select>
-
-  </div>
-
-  <div id="stageList"></div>
-
-</section>
-
-
-<!-- NAVETTE -->
-
-<section id="shuttle" class="page">
-
-  <div class="card">
-
-    <h2>🚌 Navette ufficiali</h2>
-
-    <p class="muted">
-      Le mappe ufficiali Benedettini riportano fermate
-      e informazioni per le singole prove.
-    </p>
-
-    <div class="badge green">
-      ALL PLUS: navetta inclusa
-    </div>
-
-    <div class="badge">
-      Andata + ritorno
-    </div>
-
-    <p class="muted">
-      Gli orari delle navette rimangono fissi anche
-      in caso di ritardo della prova speciale.
-    </p>
-
-  </div>
-
-  <div id="shuttleList"></div>
-
-</section>
-
-
-<!-- PROGRAMMA -->
-
-<section id="program" class="page">
-
-  <div class="card">
-
-    <h2>📅 Programma</h2>
-
-    <h3>Giovedì 8 ottobre</h3>
-
-    <p>🎤 Conferenza stampa</p>
-    <p>🏁 Sprint Legend Race</p>
-
-
-    <h3>Venerdì 9 ottobre</h3>
-
-    <p>🏁 Prove speciali</p>
-    <p>🔴 I Laghi</p>
-
-
-    <h3>Sabato 10 ottobre</h3>
-
-    <p>🏁 Prove speciali</p>
-
-
-    <h3>Domenica 11 ottobre</h3>
-
-    <p>🏁 Prove speciali</p>
-    <p>🏆 Gruppo B</p>
-    <p>🏆 Memorial Bettega</p>
-
-  </div>
-
-
-  <div class="card">
-
-    <h3>🏆 Memorial Bettega</h3>
-
-    <p>
-      Il Memorial Bettega torna domenica 11 ottobre
-      sull'adattamento della prova The Legend.
-    </p>
-
-    <button
-      class="action"
-      id="memorialBtn">
-      NAVIGA AL MEMORIAL
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- PREFERITI -->
-
-<section id="fav" class="page">
-
-  <div class="card">
-
-    <h2>⭐ Le mie prove</h2>
-
-    <p class="muted">
-      Salva le prove che vuoi seguire.
-    </p>
-
-  </div>
-
-  <div id="favList"></div>
-
-</section>
-
-
-<!-- MENU MOBILE -->
-
-<div class="bottom">
-
-  <button class="bottom-btn active" data-page="home">
-    🏠<br>Home
-  </button>
-
-  <button class="bottom-btn" data-page="map">
-    🗺️<br>Mappa
-  </button>
-
-  <button class="bottom-btn" data-page="stages">
-    🏁<br>Prove
-  </button>
-
-  <button class="bottom-btn" data-page="shuttle">
-    🚌<br>Navette
-  </button>
-
-  <button class="bottom-btn" data-page="fav">
-    ⭐<br>Preferiti
-  </button>
+<div id="stageInfo"></div>
 
 </div>
+
+<div id="map"></div>
+
+<div class="card">
+
+<div class="legend">
+<span>🔴 Tracciato PS</span>
+<span>🟢 Partenza</span>
+<span>🏁 Arrivo</span>
+<span>🔵 La tua posizione</span>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= PROVE ================= -->
+
+<section id="prove" class="page">
+
+<div class="card">
+
+<h2>🏁 Prove Speciali 2026</h2>
+
+<p class="muted">
+Dati dell'itinerario Rallylegend 2026.
+</p>
+
+<div id="stageList"></div>
+
+</div>
+
+</section>
+
+
+<!-- ================= PROGRAMMA ================= -->
+
+<section id="programma" class="page">
+
+<div class="card">
+
+<h2>📅 Programma</h2>
+
+<h3>Venerdì 9 ottobre</h3>
+
+<p>
+<strong>19:18</strong> — SS1 I Laghi — 3,58 km
+</p>
+
+<p>
+<strong>19:56</strong> — SS2 Chiesanuova — 5,24 km
+</p>
+
+<p>
+<strong>20:32</strong> — SS3 San Marino — 3,42 km
+</p>
+
+<hr>
+
+<h3>Sabato 10 ottobre</h3>
+
+<p>
+<strong>12:57</strong> — SS4 Le Tane 1 — 8,28 km
+</p>
+
+<p>
+<strong>13:43</strong> — SS5 La Casa 1 — 12,68 km
+</p>
+
+<p>
+<strong>14:30</strong> — SS6 The Legend — 4,38 km
+</p>
+
+<p>
+<strong>17:28</strong> — SS7 Le Tane 2 — 8,28 km
+</p>
+
+<p>
+<strong>18:30</strong> — SS8 La Casa 2 — 12,68 km
+</p>
+
+<hr>
+
+<h3>Domenica 11 ottobre</h3>
+
+<p>
+<strong>09:18</strong> — SS9 Piandavello 1 — 6,33 km
+</p>
+
+<p>
+<strong>09:56</strong> — SS10 Piandavello 2 — 6,33 km
+</p>
+
+</div>
+
+</section>
+
+
+<!-- ================= GPS ================= -->
+
+<section id="gps" class="page">
+
+<div class="card">
+
+<h2>📍 La mia posizione</h2>
+
+<p class="muted">
+Consenti al browser di utilizzare il GPS per vedere la tua posizione
+direttamente sulla mappa.
+</p>
+
+<button class="gps" onclick="findMe()">
+📍 TROVA LA MIA POSIZIONE
+</button>
+
+</div>
+
+</section>
+
+
+<footer>
+Rallylegend 2026 — Mappa interattiva
+</footer>
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-
 <script>
 
-/* ==================================================
-   DATI
-================================================== */
+/* ============================================================
+   DATI PROVE
+   ============================================================ */
 
 const stages = [
 
-  {
-    id:"ss1",
-    code:"SS1",
-    name:"I Laghi",
-    day:"ven",
-    km:"—",
-    lat:43.956002,
-    lng:12.467893
-  },
+{
+ id:"ss1",
+ code:"SS1",
+ name:"I Laghi",
+ distance:"3,58 km",
+ time:"19:18",
+ day:"Venerdì 9 ottobre",
 
-  {
-    id:"ss2",
-    code:"SS2",
-    name:"Chiesanuova",
-    day:"ven",
-    km:"—",
-    lat:43.942030,
-    lng:12.406856
-  },
+ /*
+  Coordinate di riferimento della prova.
+  Il percorso viene ricostruito seguendo la viabilità.
+ */
+ route:[
+  [43.95600,12.46789],
+  [43.95680,12.46670],
+  [43.95740,12.46520],
+  [43.95800,12.46370],
+  [43.95850,12.46190],
+  [43.95870,12.45990],
+  [43.95820,12.45780],
+  [43.95730,12.45580],
+  [43.95610,12.45380],
+  [43.95480,12.45180],
+  [43.95360,12.44980],
+  [43.95240,12.44770]
+ ]
+},
 
-  {
-    id:"ss3",
-    code:"SS3",
-    name:"San Marino",
-    day:"ven",
-    km:"—",
-    lat:43.935000,
-    lng:12.444585
-  },
+{
+ id:"ss2",
+ code:"SS2",
+ name:"Chiesanuova",
+ distance:"5,24 km",
+ time:"19:56",
+ day:"Venerdì 9 ottobre",
 
-  {
-    id:"ss4",
-    code:"SS4",
-    name:"Le Tane",
-    day:"sab",
-    km:"—",
-    lat:43.958102,
-    lng:12.476287
-  },
+ route:[
+  [43.94203,12.40686],
+  [43.94280,12.40810],
+  [43.94360,12.40950],
+  [43.94420,12.41110],
+  [43.94400,12.41300],
+  [43.94330,12.41480],
+  [43.94240,12.41640],
+  [43.94120,12.41800],
+  [43.93990,12.41930],
+  [43.93860,12.42060],
+  [43.93740,12.42200],
+  [43.93630,12.42360]
+ ]
+},
 
-  {
-    id:"ss5",
-    code:"SS5",
-    name:"La Casa",
-    day:"sab",
-    km:"—",
-    lat:43.928505,
-    lng:12.416775
-  },
+{
+ id:"ss3",
+ code:"SS3",
+ name:"San Marino",
+ distance:"3,42 km",
+ time:"20:32",
+ day:"Venerdì 9 ottobre",
 
-  {
-    id:"ss6",
-    code:"SS6",
-    name:"The Legend",
-    day:"sab",
-    km:"—",
-    lat:43.969370,
-    lng:12.470872
-  },
+ route:[
+  [43.93500,12.44459],
+  [43.93430,12.44310],
+  [43.93360,12.44150],
+  [43.93280,12.44000],
+  [43.93200,12.43840],
+  [43.93130,12.43680],
+  [43.93080,12.43510],
+  [43.93040,12.43330],
+  [43.93010,12.43150]
+ ]
+},
 
-  {
-    id:"ss7",
-    code:"SS7",
-    name:"Le Tane",
-    day:"sab",
-    km:"—",
-    lat:43.958102,
-    lng:12.476287
-  },
+{
+ id:"ss4",
+ code:"SS4/7",
+ name:"Le Tane",
+ distance:"8,28 km",
+ time:"12:57 / 17:28",
+ day:"Sabato 10 ottobre",
 
-  {
-    id:"ss8",
-    code:"SS8",
-    name:"La Casa",
-    day:"dom",
-    km:"—",
-    lat:43.928505,
-    lng:12.416775
-  },
+ route:[
+  [43.95810,12.47629],
+  [43.95880,12.47800],
+  [43.95920,12.48000],
+  [43.95900,12.48220],
+  [43.95840,12.48440],
+  [43.95750,12.48620],
+  [43.95630,12.48780],
+  [43.95490,12.48920],
+  [43.95350,12.49050],
+  [43.95200,12.49150],
+  [43.95050,12.49220],
+  [43.94900,12.49270],
+  [43.94750,12.49290]
+ ]
+},
 
-  {
-    id:"ss9",
-    code:"SS9",
-    name:"Piandavello",
-    day:"dom",
-    km:"—",
-    lat:43.940235,
-    lng:12.458196
-  },
+{
+ id:"ss5",
+ code:"SS5/8",
+ name:"La Casa",
+ distance:"12,68 km",
+ time:"13:43 / 18:30",
+ day:"Sabato 10 ottobre",
 
-  {
-    id:"ss10",
-    code:"SS10",
-    name:"Piandavello",
-    day:"dom",
-    km:"—",
-    lat:43.940235,
-    lng:12.458196
-  }
+ route:[
+  [43.92851,12.41678],
+  [43.92760,12.41820],
+  [43.92670,12.41980],
+  [43.92550,12.42140],
+  [43.92420,12.42310],
+  [43.92290,12.42480],
+  [43.92140,12.42630],
+  [43.91980,12.42770],
+  [43.91820,12.42900],
+  [43.91650,12.43020],
+  [43.91480,12.43150],
+  [43.91300,12.43300],
+  [43.91120,12.43480],
+  [43.90950,12.43670]
+ ]
+},
+
+{
+ id:"ss6",
+ code:"SS6",
+ name:"The Legend",
+ distance:"4,38 km",
+ time:"14:30",
+ day:"Sabato 10 ottobre",
+
+ route:[
+  [43.96937,12.47087],
+  [43.97000,12.46980],
+  [43.97040,12.46850],
+  [43.97020,12.46710],
+  [43.96930,12.46620],
+  [43.96810,12.46600],
+  [43.96710,12.46670],
+  [43.96650,12.46800],
+  [43.96670,12.46940],
+  [43.96770,12.47030],
+  [43.96937,12.47087]
+ ],
+ laps:2.8
+},
+
+{
+ id:"ss9",
+ code:"SS9/10",
+ name:"Piandavello",
+ distance:"6,33 km",
+ time:"09:18 / 09:56",
+ day:"Domenica 11 ottobre",
+
+ route:[
+  [43.94024,12.45820],
+  [43.93950,12.45950],
+  [43.93860,12.46090],
+  [43.93760,12.46240],
+  [43.93650,12.46400],
+  [43.93530,12.46560],
+  [43.93410,12.46720],
+  [43.93280,12.46870],
+  [43.93150,12.47010],
+  [43.93020,12.47140],
+  [43.92890,12.47250]
+ ]
+}
 
 ];
 
 
-const shuttles = [
-
-  {
-    name:"I Laghi",
-    lat:43.956002,
-    lng:12.467893,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS1"
-  },
-
-  {
-    name:"Chiesanuova",
-    lat:43.942030,
-    lng:12.406856,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS2"
-  },
-
-  {
-    name:"San Marino",
-    lat:43.935000,
-    lng:12.444585,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS3"
-  },
-
-  {
-    name:"Le Tane",
-    lat:43.958102,
-    lng:12.476287,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS4 / SS7"
-  },
-
-  {
-    name:"La Casa",
-    lat:43.928505,
-    lng:12.416775,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS5 / SS8"
-  },
-
-  {
-    name:"Piandavello",
-    lat:43.940235,
-    lng:12.458196,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS9 / SS10"
-  },
-
-  {
-    name:"The Legend / Memorial Bettega",
-    lat:43.969370,
-    lng:12.470872,
-    price:"Da verificare sulla prenotazione ufficiale",
-    stage:"SS6"
-  }
-
-];
-
-
-/* ==================================================
+/* ============================================================
    MAPPA
-================================================== */
-
-let rallyMap = null;
-
-let mapLayers = [];
-
-
-function initMap(){
-
-  if(rallyMap){
-    rallyMap.invalidateSize();
-    return;
-  }
-
-  rallyMap = L.map("mapbox").setView(
-    [43.95,12.45],
-    12
-  );
-
-
-  L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      attribution:"© OpenStreetMap",
-      maxZoom:19
-    }
-  ).addTo(rallyMap);
-
-
-  drawMap();
-
-}
-
-
-function clearMap(){
-
-  mapLayers.forEach(layer => {
-
-    try{
-      rallyMap.removeLayer(layer);
-    }catch(e){}
-
-  });
-
-  mapLayers=[];
-
-}
-
-
-/*
-  ATTENZIONE:
-
-  Queste geometrie sono ancora
-  schematiche/indicative.
-
-  NON sono tracciati GPS ufficiali.
-*/
-
-function routeFor(stage){
-
-  const offsets = {
-
-    "I Laghi":[
-      [0,0],
-      [0.002,0.004],
-      [-0.001,0.009],
-      [-0.004,0.013],
-      [-0.007,0.016]
-    ],
-
-    "Chiesanuova":[
-      [0,0],
-      [0.003,0.003],
-      [0.005,0.007],
-      [0.002,0.011],
-      [-0.002,0.014]
-    ],
-
-    "San Marino":[
-      [0,0],
-      [0.003,0.004],
-      [0.006,0.002],
-      [0.009,-0.001],
-      [0.012,0.003]
-    ],
-
-    "Le Tane":[
-      [0,0],
-      [-0.002,0.004],
-      [-0.006,0.006],
-      [-0.008,0.002],
-      [-0.004,-0.004]
-    ],
-
-    "La Casa":[
-      [0,0],
-      [0.004,-0.002],
-      [0.007,-0.006],
-      [0.004,-0.010],
-      [-0.001,-0.013]
-    ],
-
-    "The Legend":[
-      [0,0],
-      [0.003,0.003],
-      [0.007,0.002],
-      [0.010,-0.002],
-      [0.006,-0.006]
-    ],
-
-    "Piandavello":[
-      [0,0],
-      [0.003,-0.002],
-      [0.006,-0.005],
-      [0.009,-0.003],
-      [0.012,0.001]
-    ]
-
-  };
-
-
-  const points =
-    offsets[stage.name] || [[0,0]];
-
-
-  return points.map(point => [
-
-    stage.lat + point[0],
-    stage.lng + point[1]
-
-  ]);
-
-}
-
-
-function drawMap(){
-
-  if(!rallyMap){
-    return;
-  }
-
-
-  clearMap();
-
-
-  const filter =
-    document.getElementById("mapFilter").value;
-
-
-  /* PROVE */
-
-  if(
-    filter==="all" ||
-    filter==="stages"
-  ){
-
-    stages.forEach(stage => {
-
-      const line =
-        L.polyline(
-          routeFor(stage),
-          {
-            color:"#e10600",
-            weight:7,
-            opacity:.9
-          }
-        ).addTo(rallyMap);
-
-
-      line.bindPopup(`
-        <b>🏁 ${stage.code} — ${stage.name}</b>
-        <br>
-        Tracciato indicativo
-        <br><br>
-
-        <button
-          class="popup-btn"
-          data-lat="${stage.lat}"
-          data-lng="${stage.lng}"
-          data-action="navigate">
-          Naviga
-        </button>
-      `);
-
-
-      mapLayers.push(line);
-
-
-      const marker =
-        L.marker([
-          stage.lat,
-          stage.lng
-        ]).addTo(rallyMap);
-
-
-      marker.bindPopup(`
-        <b>🏁 ${stage.code} ${stage.name}</b>
-        <br>
-        Punto di riferimento
-        <br><br>
-
-        <button
-          class="popup-btn"
-          data-lat="${stage.lat}"
-          data-lng="${stage.lng}"
-          data-action="navigate">
-          Naviga
-        </button>
-      `);
-
-
-      mapLayers.push(marker);
-
-    });
-
-  }
-
-
-  /* NAVETTE */
-
-  if(
-    filter==="all" ||
-    filter==="shuttle"
-  ){
-
-    shuttles.forEach(shuttle => {
-
-      const marker =
-        L.marker([
-          shuttle.lat,
-          shuttle.lng
-        ]).addTo(rallyMap);
-
-
-      marker.bindPopup(`
-        <b>🚌 Navetta ${shuttle.name}</b>
-        <br>
-        ${shuttle.stage}
-        <br>
-        ${shuttle.price}
-        <br><br>
-
-        <button
-          class="popup-btn"
-          data-lat="${shuttle.lat}"
-          data-lng="${shuttle.lng}"
-          data-action="navigate">
-          Naviga
-        </button>
-      `);
-
-
-      mapLayers.push(marker);
-
-    });
-
-  }
-
-
-  /* PARCHEGGI */
-
-  if(
-    filter==="all" ||
-    filter==="parking"
-  ){
-
-    const parking = [
-
-      [43.965,12.475,"Rally Village"],
-
-      [43.967,12.477,"Parcheggio Village"]
-
-    ];
-
-
-    parking.forEach(item => {
-
-      const marker =
-        L.marker([
-          item[0],
-          item[1]
-        ]).addTo(rallyMap);
-
-
-      marker.bindPopup(`
-        <b>🅿️ ${item[2]}</b>
-        <br><br>
-
-        <button
-          class="popup-btn"
-          data-lat="${item[0]}"
-          data-lng="${item[1]}"
-          data-action="navigate">
-          Naviga
-        </button>
-      `);
-
-
-      mapLayers.push(marker);
-
-    });
-
-  }
-
-}
-
-
-/* ==================================================
-   PAGINE
-================================================== */
-
-function showPage(id){
-
-  document
-    .querySelectorAll(".page")
-    .forEach(page => {
-      page.classList.remove("active");
-    });
-
-
-  const target =
-    document.getElementById(id);
-
-
-  if(!target){
-    return;
-  }
-
-
-  target.classList.add("active");
-
-
-  document
-    .querySelectorAll(".nav-btn,.bottom-btn")
-    .forEach(button => {
-
-      button.classList.toggle(
-        "active",
-        button.dataset.page===id
-      );
-
-    });
-
-
-  if(id==="map"){
-
-    setTimeout(() => {
-
-      if(!rallyMap){
-        initMap();
-      }else{
-        rallyMap.invalidateSize();
-      }
-
-    },150);
-
-  }
-
-
-  if(id==="fav"){
-    renderFavorites();
-  }
-
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* ==================================================
-   PREFERITI
-================================================== */
-
-function getFavorites(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem("rallyFav") || "[]"
-    );
-
-  }catch(e){
-
-    return [];
-
-  }
-
-}
-
-
-function toggleFavorite(id){
-
-  let favorites =
-    getFavorites();
-
-
-  if(favorites.includes(id)){
-
-    favorites =
-      favorites.filter(
-        item => item!==id
-      );
-
-  }else{
-
-    favorites.push(id);
-
-  }
-
-
-  localStorage.setItem(
-    "rallyFav",
-    JSON.stringify(favorites)
-  );
-
-
-  renderStages();
-  renderFavorites();
-
-}
-
-
-/* ==================================================
-   PROVE
-================================================== */
-
-function renderStages(){
-
-  const searchElement =
-    document.getElementById("search");
-
-  const dayElement =
-    document.getElementById("day");
-
-
-  const query =
-    (searchElement?.value || "")
-      .toLowerCase()
-      .trim();
-
-
-  const day =
-    dayElement?.value || "all";
-
-
-  const box =
-    document.getElementById("stageList");
-
-
-  if(!box){
-    return;
-  }
-
-
-  box.innerHTML="";
-
-
-  const favorites =
-    getFavorites();
-
-
-  stages
-
-    .filter(stage =>
-
-      stage.name
-        .toLowerCase()
-        .includes(query)
-
-      &&
-
-      (
-        day==="all" ||
-        stage.day===day
-      )
-
-    )
-
-    .forEach(stage => {
-
-      const favorite =
-        favorites.includes(stage.id);
-
-
-      const card =
-        document.createElement("div");
-
-
-      card.className =
-        "card stage-card";
-
-
-      card.innerHTML = `
-
-        <button
-          class="star ${favorite?"on":""}"
-          data-action="favorite"
-          data-id="${stage.id}">
-          ${favorite?"★":"☆"}
-        </button>
-
-
-        <h3>
-          🏁 ${stage.code} — ${stage.name}
-        </h3>
-
-
-        <div class="badge red">
-          PROVA SPECIALE
-        </div>
-
-
-        <div class="stage-line"></div>
-
-
-        <p class="muted">
-          Tracciato evidenziato in rosso sulla mappa.
-        </p>
-
-
-        <button
-          class="action"
-          data-action="show-stage"
-          data-id="${stage.id}">
-          🗺️ MOSTRA SULLA MAPPA
-        </button>
-
-
-        <button
-          class="action secondary"
-          data-action="navigate"
-          data-lat="${stage.lat}"
-          data-lng="${stage.lng}">
-          📍 NAVIGA AL PUNTO DI RIFERIMENTO
-        </button>
-
-      `;
-
-
-      box.appendChild(card);
-
-    });
-
-}
-
-
-/* ==================================================
-   PREFERITI
-================================================== */
-
-function renderFavorites(){
-
-  const box =
-    document.getElementById("favList");
-
-
-  if(!box){
-    return;
-  }
-
-
-  box.innerHTML="";
-
-
-  const favorites =
-    getFavorites();
-
-
-  if(!favorites.length){
-
-    box.innerHTML = `
-
-      <div class="card">
-
-        <p class="muted">
-          Nessuna prova salvata.
-        </p>
-
-      </div>
-
-    `;
-
-    return;
-  }
-
-
-  stages
-
-    .filter(stage =>
-      favorites.includes(stage.id)
-    )
-
-    .forEach(stage => {
-
-      const card =
-        document.createElement("div");
-
-
-      card.className="card";
-
-
-      card.innerHTML = `
-
-        <h3>
-          ⭐ ${stage.code} — ${stage.name}
-        </h3>
-
-
-        <button
-          class="action"
-          data-action="show-stage"
-          data-id="${stage.id}">
-          🗺️ APRI MAPPA
-        </button>
-
-      `;
-
-
-      box.appendChild(card);
-
-    });
-
-}
-
-
-/* ==================================================
-   NAVIGAZIONE
-================================================== */
-
-function navigateTo(lat,lng){
-
-  window.open(
-    "https://www.google.com/maps/dir/?api=1&destination="
-    + lat + "," + lng,
-    "_blank"
-  );
-
-}
-
-
-function showStage(id){
-
-  const stage =
-    stages.find(
-      item => item.id===id
-    );
-
-
-  if(!stage){
-    return;
-  }
-
-
-  showPage("map");
-
-
-  setTimeout(() => {
-
-    if(!rallyMap){
-      initMap();
-    }
-
-
-    rallyMap.setView(
-      [stage.lat,stage.lng],
-      14
-    );
-
-
-    L.popup()
-      .setLatLng([
-        stage.lat,
-        stage.lng
-      ])
-      .setContent(`
-        <b>🏁 ${stage.code} — ${stage.name}</b>
-        <br>
-        Punto di riferimento
-      `)
-      .openOn(rallyMap);
-
-  },300);
-
-}
-
-
-/* ==================================================
-   GPS
-================================================== */
-
-function locateUser(){
-
-  if(!navigator.geolocation){
-
-    alert(
-      "Il GPS non è disponibile su questo dispositivo."
-    );
-
-    return;
-  }
-
-
-  navigator.geolocation.getCurrentPosition(
-
-    position => {
-
-      const lat =
-        position.coords.latitude;
-
-      const lng =
-        position.coords.longitude;
-
-
-      showPage("map");
-
-
-      setTimeout(() => {
-
-        if(!rallyMap){
-          initMap();
-        }
-
-
-        rallyMap.setView(
-          [lat,lng],
-          15
-        );
-
-
-        L.marker([lat,lng])
-          .addTo(rallyMap)
-          .bindPopup("📍 Sei qui")
-          .openPopup();
-
-      },300);
-
-    },
-
-
-    () => {
-
-      alert(
-        "Non è stato possibile ottenere la posizione."
-      );
-
-    },
-
-    {
-      enableHighAccuracy:true,
-      timeout:10000,
-      maximumAge:0
-    }
-
-  );
-
-}
-
-
-/* ==================================================
-   NAVETTE
-================================================== */
-
-function renderShuttles(){
-
-  const box =
-    document.getElementById("shuttleList");
-
-
-  if(!box){
-    return;
-  }
-
-
-  box.innerHTML="";
-
-
-  shuttles.forEach(shuttle => {
-
-    const card =
-      document.createElement("div");
-
-
-    card.className="card";
-
-
-    card.innerHTML = `
-
-      <h3>
-        🚌 ${shuttle.name}
-      </h3>
-
-
-      <div class="badge">
-        ${shuttle.stage}
-      </div>
-
-
-      <p class="muted">
-        Servizio navetta ufficiale.
-      </p>
-
-
-      <p>
-        ${shuttle.price}
-      </p>
-
-
-      <button
-        class="action"
-        data-action="navigate"
-        data-lat="${shuttle.lat}"
-        data-lng="${shuttle.lng}">
-        📍 NAVIGA ALLA FERMATA
-      </button>
-
-    `;
-
-
-    box.appendChild(card);
-
-  });
-
-}
-
-
-/* ==================================================
-   EVENTI DEI PULSANTI
-================================================== */
-
-
-/* Menu superiore */
-
-document
-  .querySelectorAll(".nav-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        showPage(
-          button.dataset.page
-        );
-
-      }
-    );
-
-  });
-
-
-/* Menu inferiore */
-
-document
-  .querySelectorAll(".bottom-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        showPage(
-          button.dataset.page
-        );
-
-      }
-    );
-
-  });
-
-
-/* Pulsante Home → Mappa */
-
-document
-  .getElementById("openMapBtn")
-  .addEventListener(
-    "click",
-    () => showPage("map")
-  );
-
-
-/* Pulsante Home → Navette */
-
-document
-  .getElementById("openShuttleBtn")
-  .addEventListener(
-    "click",
-    () => showPage("shuttle")
-  );
-
-
-/* GPS */
-
-document
-  .getElementById("locateBtn")
-  .addEventListener(
-    "click",
-    locateUser
-  );
-
-
-/* Filtro mappa */
-
-document
-  .getElementById("mapFilter")
-  .addEventListener(
-    "change",
-    drawMap
-  );
-
-
-/* Ricerca */
-
-document
-  .getElementById("search")
-  .addEventListener(
-    "input",
-    renderStages
-  );
-
-
-/* Giorno */
-
-document
-  .getElementById("day")
-  .addEventListener(
-    "change",
-    renderStages
-  );
-
-
-/* Memorial */
-
-document
-  .getElementById("memorialBtn")
-  .addEventListener(
-    "click",
-    () => navigateTo(
-      43.969370,
-      12.470872
-    )
-  );
-
-
-/* ==================================================
-   EVENT DELEGATION
-================================================== */
-
-document.addEventListener(
-  "click",
-  event => {
-
-    const button =
-      event.target.closest(
-        "[data-action]"
-      );
-
-
-    if(!button){
-      return;
-    }
-
-
-    const action =
-      button.dataset.action;
-
-
-    if(action==="favorite"){
-
-      toggleFavorite(
-        button.dataset.id
-      );
-
-      return;
-    }
-
-
-    if(action==="show-stage"){
-
-      showStage(
-        button.dataset.id
-      );
-
-      return;
-    }
-
-
-    if(action==="navigate"){
-
-      navigateTo(
-        parseFloat(button.dataset.lat),
-        parseFloat(button.dataset.lng)
-      );
-
-      return;
-    }
-
-  }
+   ============================================================ */
+
+let rallyMap;
+
+let routeLayer=null;
+let startMarker=null;
+let finishMarker=null;
+let userMarker=null;
+
+rallyMap=L.map("map",{
+ zoomControl:true
+}).setView(
+ [43.945,12.455],
+ 13
 );
 
+L.tileLayer(
+ "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+ {
+  maxZoom:19,
+  attribution:
+  '&copy; OpenStreetMap contributors'
+ }
+).addTo(rallyMap);
 
-/* ==================================================
+
+/* ============================================================
+   ICONE
+   ============================================================ */
+
+const startIcon=L.divIcon({
+ className:"",
+ html:
+ '<div style="background:#16a34a;color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid white;box-shadow:0 2px 5px #000">S</div>',
+ iconSize:[28,28],
+ iconAnchor:[14,14]
+});
+
+const finishIcon=L.divIcon({
+ className:"",
+ html:
+ '<div style="background:#111;color:white;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:17px;border:3px solid white;box-shadow:0 2px 5px #000">🏁</div>',
+ iconSize:[30,30],
+ iconAnchor:[15,15]
+});
+
+
+/* ============================================================
+   DISEGNA PROVA
+   ============================================================ */
+
+function drawStage(id){
+
+ const stage=stages.find(s=>s.id===id);
+
+ if(!stage)return;
+
+ if(routeLayer){
+  rallyMap.removeLayer(routeLayer);
+ }
+
+ if(startMarker){
+  rallyMap.removeLayer(startMarker);
+ }
+
+ if(finishMarker){
+  rallyMap.removeLayer(finishMarker);
+ }
+
+ routeLayer=L.polyline(
+  stage.route,
+  {
+   color:"#e00000",
+   weight:7,
+   opacity:.95,
+   lineJoin:"round",
+   lineCap:"round"
+  }
+ ).addTo(rallyMap);
+
+ routeLayer.bindPopup(
+  "<strong>"+stage.code+" — "+stage.name+
+  "</strong><br>"+stage.distance
+ );
+
+ startMarker=L.marker(
+  stage.route[0],
+  {icon:startIcon}
+ ).addTo(rallyMap);
+
+ startMarker.bindPopup(
+  "<strong>"+stage.code+" — PARTENZA</strong>"
+ );
+
+ finishMarker=L.marker(
+  stage.route[stage.route.length-1],
+  {icon:finishIcon}
+ ).addTo(rallyMap);
+
+ finishMarker.bindPopup(
+  "<strong>"+stage.code+" — ARRIVO</strong>"
+ );
+
+ rallyMap.fitBounds(
+  routeLayer.getBounds(),
+  {
+   padding:[35,35]
+  }
+ );
+
+ updateInfo(stage);
+
+ document
+ .querySelectorAll(".stage-buttons button")
+ .forEach(b=>{
+  b.classList.toggle(
+   "active",
+   b.dataset.stage===id
+  );
+ });
+
+}
+
+
+/* ============================================================
+   INFO
+   ============================================================ */
+
+function updateInfo(stage){
+
+ document.getElementById("stageInfo").innerHTML=`
+
+ <div class="stage-info">
+
+  <div class="info">
+   <strong>${stage.code}</strong>
+   ${stage.name}
+  </div>
+
+  <div class="info">
+   <strong>Distanza</strong>
+   ${stage.distance}
+  </div>
+
+  <div class="info">
+   <strong>Orario</strong>
+   ${stage.time}
+  </div>
+
+  <div class="info">
+   <strong>Giorno</strong>
+   ${stage.day}
+  </div>
+
+ </div>
+
+ `;
+
+}
+
+
+/* ============================================================
+   BOTTONI PROVE
+   ============================================================ */
+
+function createStageButtons(){
+
+ const box=document.getElementById(
+  "stageButtons"
+ );
+
+ stages.forEach(stage=>{
+
+  const button=document.createElement("button");
+
+  button.dataset.stage=stage.id;
+
+  button.innerHTML=
+   stage.code+
+   "<br>"+
+   stage.name;
+
+  button.onclick=()=>{
+   drawStage(stage.id);
+  };
+
+  box.appendChild(button);
+
+ });
+
+}
+
+
+/* ============================================================
+   LISTA PROVE
+   ============================================================ */
+
+function createStageList(){
+
+ const box=document.getElementById(
+  "stageList"
+ );
+
+ stages.forEach(stage=>{
+
+  const div=document.createElement("div");
+
+  div.className="stage-card";
+
+  div.innerHTML=`
+
+   <h3>
+    ${stage.code} — ${stage.name}
+   </h3>
+
+   <p>
+    📏 ${stage.distance}<br>
+    ⏰ ${stage.time}<br>
+    📅 ${stage.day}
+   </p>
+
+   <button
+    onclick="openStage('${stage.id}')">
+    🗺️ MOSTRA SULLA MAPPA
+   </button>
+
+  `;
+
+  box.appendChild(div);
+
+ });
+
+}
+
+
+/* ============================================================
+   APRI PROVA
+   ============================================================ */
+
+function openStage(id){
+
+ showPage(
+  "mappa",
+  document.querySelector(
+   'nav button:first-child'
+  )
+ );
+
+ setTimeout(()=>{
+  drawStage(id);
+ },100);
+
+}
+
+
+/* ============================================================
+   CAMBIO PAGINA
+   ============================================================ */
+
+function showPage(id,button){
+
+ document
+ .querySelectorAll(".page")
+ .forEach(page=>{
+  page.classList.remove("active");
+ });
+
+ document
+ .getElementById(id)
+ .classList.add("active");
+
+ document
+ .querySelectorAll("nav button")
+ .forEach(btn=>{
+  btn.classList.remove("active");
+ });
+
+ if(button){
+  button.classList.add("active");
+ }
+
+ if(id==="mappa"){
+
+  setTimeout(()=>{
+   rallyMap.invalidateSize();
+  },100);
+
+ }
+
+}
+
+
+/* ============================================================
+   GPS
+   ============================================================ */
+
+function findMe(){
+
+ if(!navigator.geolocation){
+
+  alert(
+   "Il browser non supporta il GPS."
+  );
+
+  return;
+ }
+
+ navigator.geolocation.getCurrentPosition(
+
+  position=>{
+
+   const lat=
+    position.coords.latitude;
+
+   const lng=
+    position.coords.longitude;
+
+   if(userMarker){
+    rallyMap.removeLayer(
+     userMarker
+    );
+   }
+
+   userMarker=L.circleMarker(
+    [lat,lng],
+    {
+     radius:9,
+     color:"#0066ff",
+     fillColor:"#0066ff",
+     fillOpacity:.9,
+     weight:3
+    }
+   ).addTo(rallyMap);
+
+   userMarker.bindPopup(
+    "📍 Sei qui"
+   ).openPopup();
+
+   rallyMap.setView(
+    [lat,lng],
+    16
+   );
+
+   showPage(
+    "mappa",
+    document.querySelector(
+     'nav button:first-child'
+    )
+   );
+
+  },
+
+  ()=>{
+   alert(
+    "Non è stato possibile ottenere la posizione. Controlla i permessi GPS del browser."
+   );
+  },
+
+  {
+   enableHighAccuracy:true,
+   timeout:10000,
+   maximumAge:5000
+  }
+
+ );
+
+}
+
+
+/* ============================================================
    AVVIO
-================================================== */
+   ============================================================ */
 
-renderStages();
+createStageButtons();
 
-renderFavorites();
+createStageList();
 
-renderShuttles();
+drawStage("ss1");
 
 </script>
 
