@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -12,364 +11,439 @@
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 :root{
- --red:#e10600;
- --dark:#080808;
- --card:#151515;
- --card2:#202020;
- --text:#fff;
- --muted:#aaa;
+  --red:#e10600;
+  --dark:#080808;
+  --card:#151515;
+  --card2:#202020;
+  --text:#fff;
+  --muted:#aaa;
+}
+
+html,
+body{
+  margin:0;
+  padding:0;
+  background:var(--dark);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
- margin:0;
- background:var(--dark);
- color:var(--text);
- font-family:Arial,Helvetica,sans-serif;
+  padding-bottom:70px;
 }
 
 header{
- position:sticky;
- top:0;
- z-index:2000;
- background:#090909;
- border-bottom:1px solid #333;
- padding:15px;
+  position:sticky;
+  top:0;
+  z-index:3000;
+  background:#090909;
+  border-bottom:1px solid #333;
+  padding:15px;
 }
 
 .logo{
- font-size:24px;
- font-weight:900;
- letter-spacing:1px;
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:1px;
 }
 
-.logo span{color:var(--red)}
+.logo span{
+  color:var(--red);
+}
 
 .subtitle{
- color:#aaa;
- font-size:13px;
- margin-top:4px;
+  color:#aaa;
+  font-size:13px;
+  margin-top:4px;
 }
 
 nav{
- display:flex;
- gap:7px;
- overflow-x:auto;
- padding:9px;
- background:#111;
- position:sticky;
- top:73px;
- z-index:1900;
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  padding:9px;
+  background:#111;
+  position:sticky;
+  top:73px;
+  z-index:2900;
 }
 
 nav button{
- flex:none;
- border:1px solid #444;
- background:#1b1b1b;
- color:white;
- border-radius:20px;
- padding:10px 14px;
+  flex:none;
+  border:1px solid #444;
+  background:#1b1b1b;
+  color:white;
+  border-radius:20px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+nav button:hover{
+  background:#333;
 }
 
 nav button.active{
- background:var(--red);
- border-color:var(--red);
+  background:var(--red);
+  border-color:var(--red);
 }
 
 .page{
- display:none;
- padding:12px;
- padding-bottom:90px;
- max-width:1200px;
- margin:auto;
+  display:none;
+  padding:12px;
+  padding-bottom:90px;
+  max-width:1200px;
+  margin:auto;
 }
 
-.page.active{display:block}
+.page.active{
+  display:block;
+}
 
 .card{
- background:var(--card);
- border:1px solid #2c2c2c;
- border-radius:16px;
- padding:15px;
- margin-bottom:12px;
+  background:var(--card);
+  border:1px solid #2c2c2c;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:12px;
 }
 
-h1,h2,h3{margin-top:0}
+h1,
+h2,
+h3{
+  margin-top:0;
+}
 
-.muted{color:var(--muted)}
+.muted{
+  color:var(--muted);
+}
 
 .grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
- gap:10px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;
 }
 
 .stat{
- background:var(--card2);
- padding:14px;
- border-radius:12px;
+  background:var(--card2);
+  padding:14px;
+  border-radius:12px;
 }
 
 .stat strong{
- display:block;
- font-size:24px;
+  display:block;
+  font-size:24px;
 }
 
-input,select{
- width:100%;
- padding:13px;
- background:#0e0e0e;
- color:#fff;
- border:1px solid #444;
- border-radius:10px;
- margin-bottom:10px;
+input,
+select{
+  width:100%;
+  padding:13px;
+  background:#0e0e0e;
+  color:#fff;
+  border:1px solid #444;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+button{
+  font-family:inherit;
 }
 
 button.action{
- width:100%;
- border:0;
- border-radius:10px;
- padding:12px;
- background:var(--red);
- color:white;
- font-weight:bold;
- margin-top:8px;
+  width:100%;
+  border:0;
+  border-radius:10px;
+  padding:12px;
+  background:var(--red);
+  color:white;
+  font-weight:bold;
+  margin-top:8px;
+  cursor:pointer;
+}
+
+button.action:hover{
+  filter:brightness(1.15);
 }
 
 button.secondary{
- background:#292929;
+  background:#292929;
+}
+
+button.secondary:hover{
+  background:#3a3a3a;
 }
 
 .badge{
- display:inline-block;
- padding:5px 8px;
- border-radius:7px;
- background:#292929;
- font-size:12px;
- margin:2px;
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:7px;
+  background:#292929;
+  font-size:12px;
+  margin:2px;
 }
 
 .badge.red{
- background:#6d0905;
+  background:#6d0905;
 }
 
 .badge.green{
- background:#155c32;
+  background:#155c32;
 }
 
-#map{
- height:68vh;
- min-height:450px;
- border-radius:15px;
- overflow:hidden;
+#mapbox{
+  width:100%;
+  height:68vh;
+  min-height:450px;
+  border-radius:15px;
+  overflow:hidden;
+  background:#222;
 }
 
 .stage-card{
- position:relative;
+  position:relative;
 }
 
 .star{
- position:absolute;
- right:12px;
- top:10px;
- border:0;
- background:none;
- color:#777;
- font-size:28px;
+  position:absolute;
+  right:12px;
+  top:10px;
+  border:0;
+  background:none;
+  color:#777;
+  font-size:28px;
+  cursor:pointer;
 }
 
 .star.on{
- color:#ffd400;
+  color:#ffd400;
 }
 
 .stage-line{
- height:8px;
- border-radius:10px;
- background:var(--red);
- margin:10px 0;
+  height:8px;
+  border-radius:10px;
+  background:var(--red);
+  margin:10px 0;
 }
 
 .legend{
- display:flex;
- flex-wrap:wrap;
- gap:8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
 }
 
 .legend span{
- padding:7px 9px;
- border-radius:8px;
- background:#222;
- font-size:12px;
+  padding:7px 9px;
+  border-radius:8px;
+  background:#222;
+  font-size:12px;
 }
 
 .legend i{
- display:inline-block;
- width:18px;
- height:5px;
- margin-right:5px;
- vertical-align:middle;
- border-radius:5px;
+  display:inline-block;
+  width:18px;
+  height:5px;
+  margin-right:5px;
+  vertical-align:middle;
+  border-radius:5px;
 }
 
 .bottom{
- position:fixed;
- bottom:0;
- left:0;
- right:0;
- z-index:2500;
- display:flex;
- justify-content:space-around;
- background:#111;
- border-top:1px solid #333;
- padding:8px 4px;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:4000;
+  display:flex;
+  justify-content:space-around;
+  background:#111;
+  border-top:1px solid #333;
+  padding:8px 4px;
 }
 
 .bottom button{
- border:0;
- background:none;
- color:#aaa;
- font-size:11px;
+  border:0;
+  background:none;
+  color:#aaa;
+  font-size:11px;
+  cursor:pointer;
 }
 
+.bottom button:hover,
 .bottom button.active{
- color:#fff;
+  color:#fff;
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip{
- background:#151515;
- color:#fff;
+  background:#151515;
+  color:#fff;
 }
 
 .popup-btn{
- background:var(--red);
- color:#fff;
- border:0;
- border-radius:7px;
- padding:8px;
+  background:var(--red);
+  color:#fff;
+  border:0;
+  border-radius:7px;
+  padding:8px;
+  cursor:pointer;
 }
 
 .route-label{
- background:#111;
- color:#fff;
- border:1px solid #555;
- border-radius:6px;
- padding:3px 6px;
- font-weight:bold;
+  background:#111;
+  color:#fff;
+  border:1px solid #555;
+  border-radius:6px;
+  padding:3px 6px;
+  font-weight:bold;
 }
 
 @media(min-width:800px){
- .bottom{display:none}
+
+  .bottom{
+    display:none;
+  }
+
+  body{
+    padding-bottom:0;
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
 <header>
- <div class="logo">RALLY<span>LEGEND</span> 2026</div>
- <div class="subtitle">
- San Marino • 8–11 ottobre 2026
- </div>
+
+  <div class="logo">
+    RALLY<span>LEGEND</span> 2026
+  </div>
+
+  <div class="subtitle">
+    San Marino • 8–11 ottobre 2026
+  </div>
+
 </header>
 
-<nav>
- <button class="active" onclick="page('home',this)">🏠 Home</button>
- <button onclick="page('map',this)">🗺️ Mappa</button>
- <button onclick="page('stages',this)">🏁 Prove</button>
- <button onclick="page('shuttle',this)">🚌 Navette</button>
- <button onclick="page('program',this)">📅 Programma</button>
- <button onclick="page('fav',this)">⭐ Preferiti</button>
+
+<nav id="topNav">
+
+  <button class="nav-btn active" data-page="home">
+    🏠 Home
+  </button>
+
+  <button class="nav-btn" data-page="map">
+    🗺️ Mappa
+  </button>
+
+  <button class="nav-btn" data-page="stages">
+    🏁 Prove
+  </button>
+
+  <button class="nav-btn" data-page="shuttle">
+    🚌 Navette
+  </button>
+
+  <button class="nav-btn" data-page="program">
+    📅 Programma
+  </button>
+
+  <button class="nav-btn" data-page="fav">
+    ⭐ Preferiti
+  </button>
+
 </nav>
+
 
 <!-- HOME -->
 
 <section id="home" class="page active">
 
-<div class="card">
+  <div class="card">
 
-<h1>🏁 Rallylegend 2026</h1>
+    <h1>🏁 Rallylegend 2026</h1>
 
-<p class="muted">
-La guida interattiva per seguire le prove speciali,
-le navette e gli spostamenti del Rallylegend.
-</p>
+    <p class="muted">
+      La guida interattiva per seguire le prove speciali,
+      le navette e gli spostamenti del Rallylegend.
+    </p>
 
-<div class="grid">
+    <div class="grid">
 
-<div class="stat">
-<strong>11</strong>
-prove
-</div>
+      <div class="stat">
+        <strong>11</strong>
+        prove
+      </div>
 
-<div class="stat">
-<strong>72,96</strong>
-km
-</div>
+      <div class="stat">
+        <strong>72,96</strong>
+        km
+      </div>
 
-<div class="stat">
-<strong>8–11</strong>
-ottobre
-</div>
+      <div class="stat">
+        <strong>8–11</strong>
+        ottobre
+      </div>
 
-<div class="stat">
-<strong>2026</strong>
-edizione
-</div>
+      <div class="stat">
+        <strong>2026</strong>
+        edizione
+      </div>
 
-</div>
+    </div>
 
-</div>
-
-
-<div class="card">
-
-<h3>🗺️ Mappa interattiva</h3>
-
-<p class="muted">
-Le prove speciali vengono evidenziate con una linea rossa
-sopra la viabilità normale.
-</p>
-
-<button class="action"
-onclick="page('map')">
-APRI LA MAPPA
-</button>
-
-</div>
+  </div>
 
 
-<div class="card">
+  <div class="card">
 
-<h3>🚌 Navette ufficiali</h3>
+    <h3>🗺️ Mappa interattiva</h3>
 
-<p class="muted">
-Il servizio navetta ufficiale collega il pubblico alle
-prove speciali. I possessori ALL PLUS hanno il servizio
-incluso, ma devono ritirare il biglietto gratuito prima
-di salire a bordo.
-</p>
+    <p class="muted">
+      Le prove speciali vengono evidenziate con una linea rossa
+      sopra la viabilità normale.
+    </p>
 
-<button class="action"
-onclick="page('shuttle')">
-VEDI NAVETTE
-</button>
+    <button class="action" id="openMapBtn">
+      APRI LA MAPPA
+    </button>
 
-</div>
+  </div>
 
 
-<div class="card">
+  <div class="card">
 
-<h3>📍 La mia posizione</h3>
+    <h3>🚌 Navette ufficiali</h3>
 
-<button class="action"
-onclick="locate()">
-TROVA LA MIA POSIZIONE
-</button>
+    <p class="muted">
+      Il servizio navetta ufficiale collega il pubblico alle
+      prove speciali.
+    </p>
 
-</div>
+    <button class="action" id="openShuttleBtn">
+      VEDI NAVETTE
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>📍 La mia posizione</h3>
+
+    <button class="action" id="locateBtn">
+      TROVA LA MIA POSIZIONE
+    </button>
+
+  </div>
 
 </section>
 
@@ -378,37 +452,49 @@ TROVA LA MIA POSIZIONE
 
 <section id="map" class="page">
 
-<div class="card">
+  <div class="card">
 
-<h2>🗺️ Mappa Rallylegend</h2>
+    <h2>🗺️ Mappa Rallylegend</h2>
 
-<select id="mapFilter"
-onchange="drawMap()">
+    <select id="mapFilter">
 
-<option value="all">Tutto</option>
-<option value="stages">Solo prove</option>
-<option value="shuttle">Solo navette</option>
-<option value="parking">Solo parcheggi</option>
+      <option value="all">
+        Tutto
+      </option>
 
-</select>
+      <option value="stages">
+        Solo prove
+      </option>
 
-<div class="legend">
+      <option value="shuttle">
+        Solo navette
+      </option>
 
-<span>
-<i style="background:#e10600"></i>
-Prova speciale
-</span>
+      <option value="parking">
+        Solo parcheggi
+      </option>
 
-<span>🏁 Partenza</span>
-<span>🏆 Arrivo</span>
-<span>🚌 Navetta</span>
-<span>🅿️ Parcheggio</span>
+    </select>
 
-</div>
 
-</div>
+    <div class="legend">
 
-<div id="mapbox"></div>
+      <span>
+        <i style="background:#e10600"></i>
+        Prova speciale
+      </span>
+
+      <span>🏁 Partenza</span>
+      <span>🏆 Arrivo</span>
+      <span>🚌 Navetta</span>
+      <span>🅿️ Parcheggio</span>
+
+    </div>
+
+  </div>
+
+
+  <div id="mapbox"></div>
 
 </section>
 
@@ -417,28 +503,38 @@ Prova speciale
 
 <section id="stages" class="page">
 
-<div class="card">
+  <div class="card">
 
-<h2>🏁 Prove speciali</h2>
+    <h2>🏁 Prove speciali</h2>
 
-<input
-id="search"
-placeholder="🔎 Cerca prova..."
-oninput="renderStages()">
+    <input
+      id="search"
+      placeholder="🔎 Cerca prova..."
+    >
 
-<select id="day"
-onchange="renderStages()">
+    <select id="day">
 
-<option value="all">Tutti i giorni</option>
-<option value="ven">Venerdì 9</option>
-<option value="sab">Sabato 10</option>
-<option value="dom">Domenica 11</option>
+      <option value="all">
+        Tutti i giorni
+      </option>
 
-</select>
+      <option value="ven">
+        Venerdì 9
+      </option>
 
-</div>
+      <option value="sab">
+        Sabato 10
+      </option>
 
-<div id="stageList"></div>
+      <option value="dom">
+        Domenica 11
+      </option>
+
+    </select>
+
+  </div>
+
+  <div id="stageList"></div>
 
 </section>
 
@@ -447,31 +543,31 @@ onchange="renderStages()">
 
 <section id="shuttle" class="page">
 
-<div class="card">
+  <div class="card">
 
-<h2>🚌 Navette ufficiali</h2>
+    <h2>🚌 Navette ufficiali</h2>
 
-<p class="muted">
-Le mappe ufficiali Benedettini riportano fermate e orari
-per le singole prove.
-</p>
+    <p class="muted">
+      Le mappe ufficiali Benedettini riportano fermate
+      e informazioni per le singole prove.
+    </p>
 
-<div class="badge green">
-ALL PLUS: navetta inclusa
-</div>
+    <div class="badge green">
+      ALL PLUS: navetta inclusa
+    </div>
 
-<div class="badge">
-Andata + ritorno
-</div>
+    <div class="badge">
+      Andata + ritorno
+    </div>
 
-<p class="muted">
-Gli orari delle navette rimangono fissi anche in caso
-di ritardo della prova speciale.
-</p>
+    <p class="muted">
+      Gli orari delle navette rimangono fissi anche
+      in caso di ritardo della prova speciale.
+    </p>
 
-</div>
+  </div>
 
-<div id="shuttleList"></div>
+  <div id="shuttleList"></div>
 
 </section>
 
@@ -480,43 +576,52 @@ di ritardo della prova speciale.
 
 <section id="program" class="page">
 
-<div class="card">
+  <div class="card">
 
-<h2>📅 Programma</h2>
+    <h2>📅 Programma</h2>
 
-<h3>Giovedì 8 ottobre</h3>
-<p>🎤 Conferenza stampa</p>
-<p>🏁 Sprint Legend Race</p>
+    <h3>Giovedì 8 ottobre</h3>
 
-<h3>Venerdì 9 ottobre</h3>
-<p>🏁 Prove speciali</p>
-<p>🔴 I Laghi</p>
+    <p>🎤 Conferenza stampa</p>
+    <p>🏁 Sprint Legend Race</p>
 
-<h3>Sabato 10 ottobre</h3>
-<p>🏁 Prove speciali</p>
 
-<h3>Domenica 11 ottobre</h3>
-<p>🏁 Prove speciali</p>
-<p>🏆 Gruppo B</p>
-<p>🏆 Memorial Bettega</p>
+    <h3>Venerdì 9 ottobre</h3>
 
-</div>
+    <p>🏁 Prove speciali</p>
+    <p>🔴 I Laghi</p>
 
-<div class="card">
 
-<h3>🏆 Memorial Bettega</h3>
+    <h3>Sabato 10 ottobre</h3>
 
-<p>
-Il Memorial Bettega torna domenica 11 ottobre
-sull'adattamento della prova The Legend.
-</p>
+    <p>🏁 Prove speciali</p>
 
-<button class="action"
-onclick="navigate(43.969370,12.470872)">
-NAVIGA AL MEMORIAL
-</button>
 
-</div>
+    <h3>Domenica 11 ottobre</h3>
+
+    <p>🏁 Prove speciali</p>
+    <p>🏆 Gruppo B</p>
+    <p>🏆 Memorial Bettega</p>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>🏆 Memorial Bettega</h3>
+
+    <p>
+      Il Memorial Bettega torna domenica 11 ottobre
+      sull'adattamento della prova The Legend.
+    </p>
+
+    <button
+      class="action"
+      id="memorialBtn">
+      NAVIGA AL MEMORIAL
+    </button>
+
+  </div>
 
 </section>
 
@@ -525,814 +630,1239 @@ NAVIGA AL MEMORIAL
 
 <section id="fav" class="page">
 
-<div class="card">
+  <div class="card">
 
-<h2>⭐ Le mie prove</h2>
+    <h2>⭐ Le mie prove</h2>
 
-<p class="muted">
-Salva le prove che vuoi seguire.
-</p>
+    <p class="muted">
+      Salva le prove che vuoi seguire.
+    </p>
 
-</div>
+  </div>
 
-<div id="favList"></div>
+  <div id="favList"></div>
 
 </section>
 
 
+<!-- MENU MOBILE -->
+
 <div class="bottom">
 
-<button onclick="page('home')">🏠<br>Home</button>
-<button onclick="page('map')">🗺️<br>Mappa</button>
-<button onclick="page('stages')">🏁<br>Prove</button>
-<button onclick="page('shuttle')">🚌<br>Navette</button>
-<button onclick="page('fav')">⭐<br>Preferiti</button>
+  <button class="bottom-btn active" data-page="home">
+    🏠<br>Home
+  </button>
+
+  <button class="bottom-btn" data-page="map">
+    🗺️<br>Mappa
+  </button>
+
+  <button class="bottom-btn" data-page="stages">
+    🏁<br>Prove
+  </button>
+
+  <button class="bottom-btn" data-page="shuttle">
+    🚌<br>Navette
+  </button>
+
+  <button class="bottom-btn" data-page="fav">
+    ⭐<br>Preferiti
+  </button>
 
 </div>
 
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+
 <script>
 
-/* ======================================
-   DATI RALLYLEGEND 2026
-====================================== */
+/* ==================================================
+   DATI
+================================================== */
 
-const stages=[
+const stages = [
 
-{
- id:"ss1",
- code:"SS1",
- name:"I Laghi",
- day:"ven",
- km:"—",
- lat:43.956002,
- lng:12.467893,
- color:"#e10600"
-},
+  {
+    id:"ss1",
+    code:"SS1",
+    name:"I Laghi",
+    day:"ven",
+    km:"—",
+    lat:43.956002,
+    lng:12.467893
+  },
 
-{
- id:"ss2",
- code:"SS2",
- name:"Chiesanuova",
- day:"ven",
- km:"—",
- lat:43.942030,
- lng:12.406856,
- color:"#e10600"
-},
+  {
+    id:"ss2",
+    code:"SS2",
+    name:"Chiesanuova",
+    day:"ven",
+    km:"—",
+    lat:43.942030,
+    lng:12.406856
+  },
 
-{
- id:"ss3",
- code:"SS3",
- name:"San Marino",
- day:"ven",
- km:"—",
- lat:43.935000,
- lng:12.444585,
- color:"#e10600"
-},
+  {
+    id:"ss3",
+    code:"SS3",
+    name:"San Marino",
+    day:"ven",
+    km:"—",
+    lat:43.935000,
+    lng:12.444585
+  },
 
-{
- id:"ss4",
- code:"SS4",
- name:"Le Tane",
- day:"sab",
- km:"—",
- lat:43.958102,
- lng:12.476287,
- color:"#e10600"
-},
+  {
+    id:"ss4",
+    code:"SS4",
+    name:"Le Tane",
+    day:"sab",
+    km:"—",
+    lat:43.958102,
+    lng:12.476287
+  },
 
-{
- id:"ss5",
- code:"SS5",
- name:"La Casa",
- day:"sab",
- km:"—",
- lat:43.928505,
- lng:12.416775,
- color:"#e10600"
-},
+  {
+    id:"ss5",
+    code:"SS5",
+    name:"La Casa",
+    day:"sab",
+    km:"—",
+    lat:43.928505,
+    lng:12.416775
+  },
 
-{
- id:"ss6",
- code:"SS6",
- name:"The Legend",
- day:"sab",
- km:"—",
- lat:43.969370,
- lng:12.470872,
- color:"#e10600"
-},
+  {
+    id:"ss6",
+    code:"SS6",
+    name:"The Legend",
+    day:"sab",
+    km:"—",
+    lat:43.969370,
+    lng:12.470872
+  },
 
-{
- id:"ss7",
- code:"SS7",
- name:"Le Tane",
- day:"sab",
- km:"—",
- lat:43.958102,
- lng:12.476287,
- color:"#e10600"
-},
+  {
+    id:"ss7",
+    code:"SS7",
+    name:"Le Tane",
+    day:"sab",
+    km:"—",
+    lat:43.958102,
+    lng:12.476287
+  },
 
-{
- id:"ss8",
- code:"SS8",
- name:"La Casa",
- day:"dom",
- km:"—",
- lat:43.928505,
- lng:12.416775,
- color:"#e10600"
-},
+  {
+    id:"ss8",
+    code:"SS8",
+    name:"La Casa",
+    day:"dom",
+    km:"—",
+    lat:43.928505,
+    lng:12.416775
+  },
 
-{
- id:"ss9",
- code:"SS9",
- name:"Piandavello",
- day:"dom",
- km:"—",
- lat:43.940235,
- lng:12.458196,
- color:"#e10600"
-},
+  {
+    id:"ss9",
+    code:"SS9",
+    name:"Piandavello",
+    day:"dom",
+    km:"—",
+    lat:43.940235,
+    lng:12.458196
+  },
 
-{
- id:"ss10",
- code:"SS10",
- name:"Piandavello",
- day:"dom",
- km:"—",
- lat:43.940235,
- lng:12.458196,
- color:"#e10600"
-}
+  {
+    id:"ss10",
+    code:"SS10",
+    name:"Piandavello",
+    day:"dom",
+    km:"—",
+    lat:43.940235,
+    lng:12.458196
+  }
 
 ];
 
 
-/* ======================================
-   NAVETTE
-====================================== */
+const shuttles = [
 
-const shuttles=[
+  {
+    name:"I Laghi",
+    lat:43.956002,
+    lng:12.467893,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS1"
+  },
 
-{
- name:"I Laghi",
- lat:43.956002,
- lng:12.467893,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS1"
-},
+  {
+    name:"Chiesanuova",
+    lat:43.942030,
+    lng:12.406856,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS2"
+  },
 
-{
- name:"Chiesanuova",
- lat:43.942030,
- lng:12.406856,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS2"
-},
+  {
+    name:"San Marino",
+    lat:43.935000,
+    lng:12.444585,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS3"
+  },
 
-{
- name:"San Marino",
- lat:43.935000,
- lng:12.444585,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS3"
-},
+  {
+    name:"Le Tane",
+    lat:43.958102,
+    lng:12.476287,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS4 / SS7"
+  },
 
-{
- name:"Le Tane",
- lat:43.958102,
- lng:12.476287,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS4 / SS7"
-},
+  {
+    name:"La Casa",
+    lat:43.928505,
+    lng:12.416775,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS5 / SS8"
+  },
 
-{
- name:"La Casa",
- lat:43.928505,
- lng:12.416775,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS5 / SS8"
-},
+  {
+    name:"Piandavello",
+    lat:43.940235,
+    lng:12.458196,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS9 / SS10"
+  },
 
-{
- name:"Piandavello",
- lat:43.940235,
- lng:12.458196,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS9 / SS10"
-},
-
-{
- name:"The Legend / Memorial Bettega",
- lat:43.969370,
- lng:12.470872,
- price:"Da verificare sulla prenotazione ufficiale",
- stage:"SS6"
-}
+  {
+    name:"The Legend / Memorial Bettega",
+    lat:43.969370,
+    lng:12.470872,
+    price:"Da verificare sulla prenotazione ufficiale",
+    stage:"SS6"
+  }
 
 ];
 
 
-/* ======================================
+/* ==================================================
    MAPPA
-====================================== */
+================================================== */
 
-let map=null;
-let layers=[];
+let rallyMap = null;
+
+let mapLayers = [];
+
 
 function initMap(){
 
-map=L.map("mapbox").setView(
-[43.95,12.45],
-12
-);
+  if(rallyMap){
+    rallyMap.invalidateSize();
+    return;
+  }
 
-L.tileLayer(
-"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-{
- attribution:"© OpenStreetMap",
- maxZoom:19
-}
-).addTo(map);
+  rallyMap = L.map("mapbox").setView(
+    [43.95,12.45],
+    12
+  );
 
-drawMap();
+
+  L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:"© OpenStreetMap",
+      maxZoom:19
+    }
+  ).addTo(rallyMap);
+
+
+  drawMap();
 
 }
 
 
 function clearMap(){
 
-layers.forEach(
-x=>map.removeLayer(x)
-);
+  mapLayers.forEach(layer => {
 
-layers=[];
+    try{
+      rallyMap.removeLayer(layer);
+    }catch(e){}
+
+  });
+
+  mapLayers=[];
 
 }
 
 
 /*
- Queste geometrie sono volutamente
- schematiche/indicative.
+  ATTENZIONE:
 
- NON sono tracciati GPS ufficiali.
- Servono per visualizzare graficamente
- le PS in rosso fino all'inserimento
- delle geometrie ufficiali.
+  Queste geometrie sono ancora
+  schematiche/indicative.
+
+  NON sono tracciati GPS ufficiali.
 */
 
-function routeFor(s){
+function routeFor(stage){
 
-const offsets={
+  const offsets = {
 
-"I Laghi":[
- [0,0],
- [0.002,0.004],
- [-0.001,0.009],
- [-0.004,0.013],
- [-0.007,0.016]
-],
+    "I Laghi":[
+      [0,0],
+      [0.002,0.004],
+      [-0.001,0.009],
+      [-0.004,0.013],
+      [-0.007,0.016]
+    ],
 
-"Chiesanuova":[
- [0,0],
- [0.003,0.003],
- [0.005,0.007],
- [0.002,0.011],
- [-0.002,0.014]
-],
+    "Chiesanuova":[
+      [0,0],
+      [0.003,0.003],
+      [0.005,0.007],
+      [0.002,0.011],
+      [-0.002,0.014]
+    ],
 
-"San Marino":[
- [0,0],
- [0.003,0.004],
- [0.006,0.002],
- [0.009,-0.001],
- [0.012,0.003]
-],
+    "San Marino":[
+      [0,0],
+      [0.003,0.004],
+      [0.006,0.002],
+      [0.009,-0.001],
+      [0.012,0.003]
+    ],
 
-"Le Tane":[
- [0,0],
- [-0.002,0.004],
- [-0.006,0.006],
- [-0.008,0.002],
- [-0.004,-0.004]
-],
+    "Le Tane":[
+      [0,0],
+      [-0.002,0.004],
+      [-0.006,0.006],
+      [-0.008,0.002],
+      [-0.004,-0.004]
+    ],
 
-"La Casa":[
- [0,0],
- [0.004,-0.002],
- [0.007,-0.006],
- [0.004,-0.010],
- [-0.001,-0.013]
-],
+    "La Casa":[
+      [0,0],
+      [0.004,-0.002],
+      [0.007,-0.006],
+      [0.004,-0.010],
+      [-0.001,-0.013]
+    ],
 
-"The Legend":[
- [0,0],
- [0.003,0.003],
- [0.007,0.002],
- [0.010,-0.002],
- [0.006,-0.006]
-],
+    "The Legend":[
+      [0,0],
+      [0.003,0.003],
+      [0.007,0.002],
+      [0.010,-0.002],
+      [0.006,-0.006]
+    ],
 
-"Piandavello":[
- [0,0],
- [0.003,-0.002],
- [0.006,-0.005],
- [0.009,-0.003],
- [0.012,0.001]
-]
+    "Piandavello":[
+      [0,0],
+      [0.003,-0.002],
+      [0.006,-0.005],
+      [0.009,-0.003],
+      [0.012,0.001]
+    ]
 
-};
+  };
 
-const pts=offsets[s.name] || [[0,0]];
 
-return pts.map(
-p=>[
- s.lat+p[0],
- s.lng+p[1]
-]
-);
+  const points =
+    offsets[stage.name] || [[0,0]];
+
+
+  return points.map(point => [
+
+    stage.lat + point[0],
+    stage.lng + point[1]
+
+  ]);
 
 }
 
 
 function drawMap(){
 
-if(!map)return;
-
-clearMap();
-
-const filter=
-document.getElementById("mapFilter").value;
+  if(!rallyMap){
+    return;
+  }
 
 
-/* PROVE */
-
-if(
-filter==="all" ||
-filter==="stages"
-){
-
-stages.forEach(s=>{
-
-const line=L.polyline(
-routeFor(s),
-{
- color:"#e10600",
- weight:7,
- opacity:.9
- }
-).addTo(map);
-
-line.bindPopup(`
-<b>🏁 ${s.code} — ${s.name}</b>
-<br>
-Tracciato indicativo
-<br><br>
-<button class="popup-btn"
-onclick="navigate(${s.lat},${s.lng})">
-Naviga
-</button>
-`);
-
-layers.push(line);
+  clearMap();
 
 
-/* PARTENZA */
+  const filter =
+    document.getElementById("mapFilter").value;
 
-const start=L.marker(
-[s.lat,s.lng]
-).addTo(map);
 
-start.bindPopup(`
-<b>🏁 ${s.code} ${s.name}</b>
-<br>
-Punto di riferimento
-<br><br>
-<button class="popup-btn"
-onclick="navigate(${s.lat},${s.lng})">
-Naviga
-</button>
-`);
+  /* PROVE */
 
-layers.push(start);
+  if(
+    filter==="all" ||
+    filter==="stages"
+  ){
 
-});
+    stages.forEach(stage => {
+
+      const line =
+        L.polyline(
+          routeFor(stage),
+          {
+            color:"#e10600",
+            weight:7,
+            opacity:.9
+          }
+        ).addTo(rallyMap);
+
+
+      line.bindPopup(`
+        <b>🏁 ${stage.code} — ${stage.name}</b>
+        <br>
+        Tracciato indicativo
+        <br><br>
+
+        <button
+          class="popup-btn"
+          data-lat="${stage.lat}"
+          data-lng="${stage.lng}"
+          data-action="navigate">
+          Naviga
+        </button>
+      `);
+
+
+      mapLayers.push(line);
+
+
+      const marker =
+        L.marker([
+          stage.lat,
+          stage.lng
+        ]).addTo(rallyMap);
+
+
+      marker.bindPopup(`
+        <b>🏁 ${stage.code} ${stage.name}</b>
+        <br>
+        Punto di riferimento
+        <br><br>
+
+        <button
+          class="popup-btn"
+          data-lat="${stage.lat}"
+          data-lng="${stage.lng}"
+          data-action="navigate">
+          Naviga
+        </button>
+      `);
+
+
+      mapLayers.push(marker);
+
+    });
+
+  }
+
+
+  /* NAVETTE */
+
+  if(
+    filter==="all" ||
+    filter==="shuttle"
+  ){
+
+    shuttles.forEach(shuttle => {
+
+      const marker =
+        L.marker([
+          shuttle.lat,
+          shuttle.lng
+        ]).addTo(rallyMap);
+
+
+      marker.bindPopup(`
+        <b>🚌 Navetta ${shuttle.name}</b>
+        <br>
+        ${shuttle.stage}
+        <br>
+        ${shuttle.price}
+        <br><br>
+
+        <button
+          class="popup-btn"
+          data-lat="${shuttle.lat}"
+          data-lng="${shuttle.lng}"
+          data-action="navigate">
+          Naviga
+        </button>
+      `);
+
+
+      mapLayers.push(marker);
+
+    });
+
+  }
+
+
+  /* PARCHEGGI */
+
+  if(
+    filter==="all" ||
+    filter==="parking"
+  ){
+
+    const parking = [
+
+      [43.965,12.475,"Rally Village"],
+
+      [43.967,12.477,"Parcheggio Village"]
+
+    ];
+
+
+    parking.forEach(item => {
+
+      const marker =
+        L.marker([
+          item[0],
+          item[1]
+        ]).addTo(rallyMap);
+
+
+      marker.bindPopup(`
+        <b>🅿️ ${item[2]}</b>
+        <br><br>
+
+        <button
+          class="popup-btn"
+          data-lat="${item[0]}"
+          data-lng="${item[1]}"
+          data-action="navigate">
+          Naviga
+        </button>
+      `);
+
+
+      mapLayers.push(marker);
+
+    });
+
+  }
 
 }
 
 
-/* NAVETTE */
-
-if(
-filter==="all" ||
-filter==="shuttle"
-){
-
-shuttles.forEach(s=>{
-
-const m=L.marker(
-[s.lat,s.lng]
-).addTo(map);
-
-m.bindPopup(`
-<b>🚌 Navetta ${s.name}</b>
-<br>
-${s.stage}
-<br>
-${s.price}
-<br><br>
-
-<button class="popup-btn"
-onclick="navigate(${s.lat},${s.lng})">
-Naviga
-</button>
-`);
-
-layers.push(m);
-
-});
-
-}
-
-
-/* PARCHEGGI */
-
-if(
-filter==="all" ||
-filter==="parking"
-){
-
-const parking=[
- [43.965,12.475,"Rally Village"],
- [43.967,12.477,"Parcheggio Village"]
-];
-
-parking.forEach(p=>{
-
-const m=L.marker(
-[p[0],p[1]]
-).addTo(map);
-
-m.bindPopup(`
-<b>🅿️ ${p[2]}</b>
-<br><br>
-<button class="popup-btn"
-onclick="navigate(${p[0]},${p[1]})">
-Naviga
-</button>
-`);
-
-layers.push(m);
-
-});
-
-}
-
-}
-
-
-/* ======================================
+/* ==================================================
    PAGINE
-====================================== */
+================================================== */
 
-function page(id,button){
+function showPage(id){
 
-document
-.querySelectorAll(".page")
-.forEach(x=>x.classList.remove("active"));
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+      page.classList.remove("active");
+    });
 
-document
-.getElementById(id)
-.classList.add("active");
 
-if(button){
+  const target =
+    document.getElementById(id);
 
-document
-.querySelectorAll("nav button")
-.forEach(x=>x.classList.remove("active"));
 
-button.classList.add("active");
+  if(!target){
+    return;
+  }
+
+
+  target.classList.add("active");
+
+
+  document
+    .querySelectorAll(".nav-btn,.bottom-btn")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page===id
+      );
+
+    });
+
+
+  if(id==="map"){
+
+    setTimeout(() => {
+
+      if(!rallyMap){
+        initMap();
+      }else{
+        rallyMap.invalidateSize();
+      }
+
+    },150);
+
+  }
+
+
+  if(id==="fav"){
+    renderFavorites();
+  }
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 }
 
-if(id==="map"){
 
-setTimeout(()=>{
-if(!map)initMap();
-else map.invalidateSize();
-},200);
+/* ==================================================
+   PREFERITI
+================================================== */
+
+function getFavorites(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem("rallyFav") || "[]"
+    );
+
+  }catch(e){
+
+    return [];
+
+  }
 
 }
 
-if(id==="fav"){
-renderFavorites();
+
+function toggleFavorite(id){
+
+  let favorites =
+    getFavorites();
+
+
+  if(favorites.includes(id)){
+
+    favorites =
+      favorites.filter(
+        item => item!==id
+      );
+
+  }else{
+
+    favorites.push(id);
+
+  }
+
+
+  localStorage.setItem(
+    "rallyFav",
+    JSON.stringify(favorites)
+  );
+
+
+  renderStages();
+  renderFavorites();
+
 }
 
-window.scrollTo(0,0);
 
-}
-
-
-/* ======================================
+/* ==================================================
    PROVE
-====================================== */
-
-function favorites(){
-
-return JSON.parse(
-localStorage.getItem("rallyFav")||"[]"
-);
-
-}
-
-
-function toggleFav(id){
-
-let f=favorites();
-
-if(f.includes(id))
- f=f.filter(x=>x!==id);
-else
- f.push(id);
-
-localStorage.setItem(
-"rallyFav",
-JSON.stringify(f)
-);
-
-renderStages();
-renderFavorites();
-
-}
-
+================================================== */
 
 function renderStages(){
 
-const q=
-(document.getElementById("search")?.value||"")
-.toLowerCase();
+  const searchElement =
+    document.getElementById("search");
 
-const day=
-document.getElementById("day")?.value||"all";
+  const dayElement =
+    document.getElementById("day");
 
-const box=
-document.getElementById("stageList");
 
-if(!box)return;
+  const query =
+    (searchElement?.value || "")
+      .toLowerCase()
+      .trim();
 
-box.innerHTML="";
 
-stages
-.filter(s=>
-s.name.toLowerCase().includes(q)
-&&
-(day==="all"||s.day===day)
-)
-.forEach(s=>{
+  const day =
+    dayElement?.value || "all";
 
-const fav=favorites().includes(s.id);
 
-const d=document.createElement("div");
+  const box =
+    document.getElementById("stageList");
 
-d.className="card stage-card";
 
-d.innerHTML=`
+  if(!box){
+    return;
+  }
 
-<button
-class="star ${fav?"on":""}"
-onclick="toggleFav('${s.id}')">
-${fav?"★":"☆"}
-</button>
 
-<h3>🏁 ${s.code} — ${s.name}</h3>
+  box.innerHTML="";
 
-<div class="badge red">
-PROVA SPECIALE
-</div>
 
-<div class="stage-line"></div>
+  const favorites =
+    getFavorites();
 
-<p class="muted">
-Tracciato evidenziato in rosso sulla mappa.
-</p>
 
-<button class="action"
-onclick="showStage('${s.id}')">
-🗺️ MOSTRA SULLA MAPPA
-</button>
+  stages
 
-<button class="action secondary"
-onclick="navigate(${s.lat},${s.lng})">
-📍 NAVIGA AL PUNTO DI RIFERIMENTO
-</button>
+    .filter(stage =>
 
-`;
+      stage.name
+        .toLowerCase()
+        .includes(query)
 
-box.appendChild(d);
+      &&
 
-});
+      (
+        day==="all" ||
+        stage.day===day
+      )
+
+    )
+
+    .forEach(stage => {
+
+      const favorite =
+        favorites.includes(stage.id);
+
+
+      const card =
+        document.createElement("div");
+
+
+      card.className =
+        "card stage-card";
+
+
+      card.innerHTML = `
+
+        <button
+          class="star ${favorite?"on":""}"
+          data-action="favorite"
+          data-id="${stage.id}">
+          ${favorite?"★":"☆"}
+        </button>
+
+
+        <h3>
+          🏁 ${stage.code} — ${stage.name}
+        </h3>
+
+
+        <div class="badge red">
+          PROVA SPECIALE
+        </div>
+
+
+        <div class="stage-line"></div>
+
+
+        <p class="muted">
+          Tracciato evidenziato in rosso sulla mappa.
+        </p>
+
+
+        <button
+          class="action"
+          data-action="show-stage"
+          data-id="${stage.id}">
+          🗺️ MOSTRA SULLA MAPPA
+        </button>
+
+
+        <button
+          class="action secondary"
+          data-action="navigate"
+          data-lat="${stage.lat}"
+          data-lng="${stage.lng}">
+          📍 NAVIGA AL PUNTO DI RIFERIMENTO
+        </button>
+
+      `;
+
+
+      box.appendChild(card);
+
+    });
 
 }
 
 
-/* ======================================
+/* ==================================================
    PREFERITI
-====================================== */
+================================================== */
 
 function renderFavorites(){
 
-const box=
-document.getElementById("favList");
+  const box =
+    document.getElementById("favList");
 
-if(!box)return;
 
-box.innerHTML="";
+  if(!box){
+    return;
+  }
 
-const f=favorites();
 
-if(!f.length){
+  box.innerHTML="";
 
-box.innerHTML=
-`<div class="card">
-<p class="muted">
-Nessuna prova salvata.
-</p>
-</div>`;
 
-return;
+  const favorites =
+    getFavorites();
+
+
+  if(!favorites.length){
+
+    box.innerHTML = `
+
+      <div class="card">
+
+        <p class="muted">
+          Nessuna prova salvata.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  stages
+
+    .filter(stage =>
+      favorites.includes(stage.id)
+    )
+
+    .forEach(stage => {
+
+      const card =
+        document.createElement("div");
+
+
+      card.className="card";
+
+
+      card.innerHTML = `
+
+        <h3>
+          ⭐ ${stage.code} — ${stage.name}
+        </h3>
+
+
+        <button
+          class="action"
+          data-action="show-stage"
+          data-id="${stage.id}">
+          🗺️ APRI MAPPA
+        </button>
+
+      `;
+
+
+      box.appendChild(card);
+
+    });
 
 }
 
-stages
-.filter(s=>f.includes(s.id))
-.forEach(s=>{
 
-const d=document.createElement("div");
-
-d.className="card";
-
-d.innerHTML=`
-
-<h3>⭐ ${s.code} — ${s.name}</h3>
-
-<button class="action"
-onclick="showStage('${s.id}')">
-🗺️ APRI MAPPA
-</button>
-
-`;
-
-box.appendChild(d);
-
-});
-
-}
-
-
-/* ======================================
+/* ==================================================
    NAVIGAZIONE
-====================================== */
+================================================== */
 
-function navigate(lat,lng){
+function navigateTo(lat,lng){
 
-window.open(
-`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
-"_blank"
-);
+  window.open(
+    "https://www.google.com/maps/dir/?api=1&destination="
+    + lat + "," + lng,
+    "_blank"
+  );
 
 }
 
 
 function showStage(id){
 
-const s=
-stages.find(x=>x.id===id);
+  const stage =
+    stages.find(
+      item => item.id===id
+    );
 
-page("map");
 
-setTimeout(()=>{
+  if(!stage){
+    return;
+  }
 
-map.setView(
-[s.lat,s.lng],
-14
-);
 
-},400);
+  showPage("map");
+
+
+  setTimeout(() => {
+
+    if(!rallyMap){
+      initMap();
+    }
+
+
+    rallyMap.setView(
+      [stage.lat,stage.lng],
+      14
+    );
+
+
+    L.popup()
+      .setLatLng([
+        stage.lat,
+        stage.lng
+      ])
+      .setContent(`
+        <b>🏁 ${stage.code} — ${stage.name}</b>
+        <br>
+        Punto di riferimento
+      `)
+      .openOn(rallyMap);
+
+  },300);
 
 }
 
 
-/* ======================================
+/* ==================================================
    GPS
-====================================== */
+================================================== */
 
-function locate(){
+function locateUser(){
 
-if(!navigator.geolocation){
+  if(!navigator.geolocation){
 
-alert("GPS non disponibile.");
+    alert(
+      "Il GPS non è disponibile su questo dispositivo."
+    );
 
-return;
+    return;
+  }
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    position => {
+
+      const lat =
+        position.coords.latitude;
+
+      const lng =
+        position.coords.longitude;
+
+
+      showPage("map");
+
+
+      setTimeout(() => {
+
+        if(!rallyMap){
+          initMap();
+        }
+
+
+        rallyMap.setView(
+          [lat,lng],
+          15
+        );
+
+
+        L.marker([lat,lng])
+          .addTo(rallyMap)
+          .bindPopup("📍 Sei qui")
+          .openPopup();
+
+      },300);
+
+    },
+
+
+    () => {
+
+      alert(
+        "Non è stato possibile ottenere la posizione."
+      );
+
+    },
+
+    {
+      enableHighAccuracy:true,
+      timeout:10000,
+      maximumAge:0
+    }
+
+  );
 
 }
 
-navigator.geolocation.getCurrentPosition(
 
-p=>{
-
-page("map");
-
-setTimeout(()=>{
-
-const lat=p.coords.latitude;
-const lng=p.coords.longitude;
-
-map.setView(
-[lat,lng],
-15
-);
-
-L.marker([lat,lng])
-.addTo(map)
-.bindPopup("📍 Sei qui")
-.openPopup();
-
-},400);
-
-},
-
-()=>{
-alert(
-"Non è stato possibile ottenere la posizione."
-);
-}
-
-);
-
-}
-
-
-/* ======================================
+/* ==================================================
    NAVETTE
-====================================== */
+================================================== */
 
 function renderShuttles(){
 
-const box=
-document.getElementById("shuttleList");
+  const box =
+    document.getElementById("shuttleList");
 
-shuttles.forEach(s=>{
 
-const d=document.createElement("div");
+  if(!box){
+    return;
+  }
 
-d.className="card";
 
-d.innerHTML=`
+  box.innerHTML="";
 
-<h3>🚌 ${s.name}</h3>
 
-<div class="badge">
-${s.stage}
-</div>
+  shuttles.forEach(shuttle => {
 
-<p class="muted">
-Servizio navetta ufficiale.
-</p>
+    const card =
+      document.createElement("div");
 
-<p>
-${s.price}
-</p>
 
-<button class="action"
-onclick="navigate(${s.lat},${s.lng})">
-📍 NAVIGA ALLA FERMATA
-</button>
+    card.className="card";
 
-`);
 
-box.appendChild(d);
+    card.innerHTML = `
 
-});
+      <h3>
+        🚌 ${shuttle.name}
+      </h3>
+
+
+      <div class="badge">
+        ${shuttle.stage}
+      </div>
+
+
+      <p class="muted">
+        Servizio navetta ufficiale.
+      </p>
+
+
+      <p>
+        ${shuttle.price}
+      </p>
+
+
+      <button
+        class="action"
+        data-action="navigate"
+        data-lat="${shuttle.lat}"
+        data-lng="${shuttle.lng}">
+        📍 NAVIGA ALLA FERMATA
+      </button>
+
+    `;
+
+
+    box.appendChild(card);
+
+  });
 
 }
 
 
-/* ======================================
+/* ==================================================
+   EVENTI DEI PULSANTI
+================================================== */
+
+
+/* Menu superiore */
+
+document
+  .querySelectorAll(".nav-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+/* Menu inferiore */
+
+document
+  .querySelectorAll(".bottom-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+/* Pulsante Home → Mappa */
+
+document
+  .getElementById("openMapBtn")
+  .addEventListener(
+    "click",
+    () => showPage("map")
+  );
+
+
+/* Pulsante Home → Navette */
+
+document
+  .getElementById("openShuttleBtn")
+  .addEventListener(
+    "click",
+    () => showPage("shuttle")
+  );
+
+
+/* GPS */
+
+document
+  .getElementById("locateBtn")
+  .addEventListener(
+    "click",
+    locateUser
+  );
+
+
+/* Filtro mappa */
+
+document
+  .getElementById("mapFilter")
+  .addEventListener(
+    "change",
+    drawMap
+  );
+
+
+/* Ricerca */
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    renderStages
+  );
+
+
+/* Giorno */
+
+document
+  .getElementById("day")
+  .addEventListener(
+    "change",
+    renderStages
+  );
+
+
+/* Memorial */
+
+document
+  .getElementById("memorialBtn")
+  .addEventListener(
+    "click",
+    () => navigateTo(
+      43.969370,
+      12.470872
+    )
+  );
+
+
+/* ==================================================
+   EVENT DELEGATION
+================================================== */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    const button =
+      event.target.closest(
+        "[data-action]"
+      );
+
+
+    if(!button){
+      return;
+    }
+
+
+    const action =
+      button.dataset.action;
+
+
+    if(action==="favorite"){
+
+      toggleFavorite(
+        button.dataset.id
+      );
+
+      return;
+    }
+
+
+    if(action==="show-stage"){
+
+      showStage(
+        button.dataset.id
+      );
+
+      return;
+    }
+
+
+    if(action==="navigate"){
+
+      navigateTo(
+        parseFloat(button.dataset.lat),
+        parseFloat(button.dataset.lng)
+      );
+
+      return;
+    }
+
+  }
+);
+
+
+/* ==================================================
    AVVIO
-====================================== */
+================================================== */
 
 renderStages();
+
 renderFavorites();
+
 renderShuttles();
 
 </script>
 
 </body>
 </html>
-```
