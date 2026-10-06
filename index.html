@@ -1,0 +1,1173 @@
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090909">
+
+<title>Rallylegend 2026</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#090909;
+    color:#fff;
+}
+
+header{
+    padding:18px 16px;
+    background:linear-gradient(135deg,#111,#1c1c1c);
+    border-bottom:1px solid #333;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.logo span{color:#e30613}
+
+.subtitle{
+    color:#aaa;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.tabs{
+    display:flex;
+    overflow-x:auto;
+    gap:7px;
+    padding:10px;
+    background:#111;
+    position:sticky;
+    top:78px;
+    z-index:900;
+}
+
+.tabs button{
+    border:1px solid #444;
+    background:#1b1b1b;
+    color:white;
+    padding:10px 14px;
+    border-radius:20px;
+    white-space:nowrap;
+}
+
+.tabs button.active{
+    background:#e30613;
+    border-color:#e30613;
+}
+
+.page{display:none;padding:12px}
+.page.active{display:block}
+
+#map{
+    height:62vh;
+    min-height:430px;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+.card{
+    background:#151515;
+    border:1px solid #292929;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:12px;
+}
+
+.card h3{
+    margin:0 0 7px;
+}
+
+.muted{color:#aaa}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px;
+}
+
+.stat{
+    background:#1d1d1d;
+    border-radius:12px;
+    padding:13px;
+}
+
+.stat strong{
+    display:block;
+    font-size:22px;
+}
+
+button.action{
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    background:#e30613;
+    color:#fff;
+    font-weight:bold;
+    margin-top:9px;
+}
+
+button.secondary{
+    background:#292929;
+}
+
+.search{
+    width:100%;
+    padding:13px;
+    border-radius:10px;
+    border:1px solid #444;
+    background:#111;
+    color:#fff;
+    margin-bottom:12px;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    background:#111;
+    color:#fff;
+    border:1px solid #444;
+    border-radius:10px;
+    margin-bottom:12px;
+}
+
+.favorite{
+    float:right;
+    border:0;
+    background:none;
+    color:#777;
+    font-size:25px;
+}
+
+.favorite.on{color:#ffd400}
+
+.badge{
+    display:inline-block;
+    background:#292929;
+    padding:5px 8px;
+    border-radius:7px;
+    font-size:12px;
+    margin:2px;
+}
+
+.red{background:#e30613}
+
+.green{background:#174d2a}
+
+.nav-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+}
+
+.nav-card button{
+    width:auto;
+    padding:9px 12px;
+}
+
+.bottom{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#111;
+    border-top:1px solid #333;
+    display:flex;
+    justify-content:space-around;
+    padding:8px;
+    z-index:1000;
+}
+
+.bottom button{
+    background:none;
+    border:0;
+    color:#aaa;
+    font-size:11px;
+}
+
+.bottom button.active{color:#fff}
+
+.info{
+    padding-bottom:80px;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip{
+    background:#151515;
+    color:white;
+}
+
+.leaflet-popup-content button{
+    background:#e30613;
+    color:#fff;
+    border:0;
+    padding:8px;
+    border-radius:7px;
+}
+
+@media(min-width:800px){
+    .bottom{display:none}
+    .page{max-width:1100px;margin:auto}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🏁 RALLY<span>LEGEND</span> 2026</div>
+    <div class="subtitle">San Marino · 8–11 ottobre 2026</div>
+</header>
+
+<div class="tabs">
+    <button class="tab active" data-page="home">🏠 Home</button>
+    <button class="tab" data-page="mapPage">🗺️ Mappa</button>
+    <button class="tab" data-page="stages">🏁 Prove</button>
+    <button class="tab" data-page="shuttle">🚌 Navette</button>
+    <button class="tab" data-page="program">📅 Programma</button>
+    <button class="tab" data-page="favorites">⭐ Preferiti</button>
+</div>
+
+<main class="info">
+
+<section id="home" class="page active">
+
+<div class="card">
+<h2>Rallylegend 2026</h2>
+<p class="muted">
+La tua guida digitale per vivere Rallylegend.
+</p>
+
+<div class="grid">
+<div class="stat">
+<strong>11</strong>
+prove speciali
+</div>
+
+<div class="stat">
+<strong>72,96</strong>
+km cronometrati
+</div>
+
+<div class="stat">
+<strong>8–11</strong>
+ottobre
+</div>
+
+<div class="stat">
+<strong>11</strong>
+Memorial Bettega
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3>🚗 Cosa vuoi fare?</h3>
+
+<button class="action" onclick="showPage('mapPage')">
+🗺️ APRI LA MAPPA
+</button>
+
+<button class="action" onclick="showPage('stages')">
+🏁 VEDI LE PROVE
+</button>
+
+<button class="action" onclick="showPage('shuttle')">
+🚌 NAVETTE E PARCHEGGI
+</button>
+</div>
+
+<div class="card">
+<h3>📍 La mia posizione</h3>
+<p class="muted">
+Usa il pulsante qui sotto per vedere la tua posizione sulla mappa.
+</p>
+<button class="action" onclick="locateUser()">
+📍 TROVA LA MIA POSIZIONE
+</button>
+</div>
+
+<div class="card">
+<h3>⚠️ Sicurezza</h3>
+<p class="muted">
+Segui sempre le indicazioni dell'organizzazione, della sicurezza
+e della Polizia. Utilizza esclusivamente le aree spettatori autorizzate.
+</p>
+</div>
+
+</section>
+
+
+<section id="mapPage" class="page">
+
+<div class="card">
+<h3>🗺️ Mappa Rallylegend</h3>
+
+<select id="mapFilter" onchange="filterMap()">
+<option value="all">Tutti i punti</option>
+<option value="stage">Prove speciali</option>
+<option value="shuttle">Navette</option>
+<option value="parking">Parcheggi</option>
+<option value="village">Rally Village</option>
+<option value="bettega">Memorial Bettega</option>
+</select>
+
+<div id="map"></div>
+</div>
+
+</section>
+
+
+<section id="stages" class="page">
+
+<div class="card">
+<h2>🏁 Prove speciali</h2>
+
+<input
+class="search"
+id="stageSearch"
+placeholder="🔎 Cerca una prova..."
+oninput="renderStages()">
+
+<select id="dayFilter" onchange="renderStages()">
+<option value="all">Tutti i giorni</option>
+<option value="venerdi">Venerdì 9 ottobre</option>
+<option value="sabato">Sabato 10 ottobre</option>
+<option value="domenica">Domenica 11 ottobre</option>
+</select>
+</div>
+
+<div id="stageList"></div>
+
+</section>
+
+
+<section id="shuttle" class="page">
+
+<div class="card">
+<h2>🚌 Navette</h2>
+
+<p>
+Il servizio navette è previsto nell'organizzazione
+dell'evento.
+</p>
+
+<div class="badge green">ALL PLUS</div>
+<div class="badge">8–11 ottobre</div>
+
+<p class="muted">
+Per il ticket ALL PLUS il servizio navette è indicato come
+a libero utilizzo.
+</p>
+</div>
+
+<div id="shuttleList"></div>
+
+<div class="card">
+<h3>🅿️ Parcheggi</h3>
+
+<p class="muted">
+L'organizzazione prevede parcheggi per il pubblico.
+Questa app mostrerà qui fermate e parcheggi ufficiali
+non appena disponibili nei documenti ufficiali.
+</p>
+
+<button class="action" onclick="showPage('mapPage')">
+🗺️ APRI MAPPA
+</button>
+</div>
+
+</section>
+
+
+<section id="program" class="page">
+
+<div class="card">
+<h2>📅 Programma</h2>
+</div>
+
+<div class="card">
+<h3>Giovedì 8 ottobre</h3>
+
+<p>🏁 Shakedown / attività di apertura</p>
+<p>🏆 Sprint Legend Race</p>
+<p>🏟️ Rallylegend Village</p>
+</div>
+
+<div class="card">
+<h3>Venerdì 9 ottobre</h3>
+
+<p>🏁 Prima giornata di prove speciali</p>
+<p class="muted">
+Il programma ufficiale 2026 prevede tre prove nella serata
+del venerdì, con il ritorno de I Laghi.
+</p>
+</div>
+
+<div class="card">
+<h3>Sabato 10 ottobre</h3>
+
+<p>🏁 Prove speciali</p>
+<p>🏁 The Legend</p>
+</div>
+
+<div class="card">
+<h3>Domenica 11 ottobre</h3>
+
+<p>🏁 Ultima giornata di gara</p>
+<p>🏆 Memorial Bettega</p>
+
+<p class="muted">
+Il Memorial Bettega si svolge sulla prova The Legend,
+su un percorso adattato di 2,88 km.
+</p>
+
+<div class="badge">Gruppo A · 12:00–12:55</div>
+<div class="badge">Gruppo B · 13:00–13:55</div>
+<div class="badge">WRC · 14:00–14:55</div>
+<div class="badge">Premiazioni · 16:30</div>
+</div>
+
+</section>
+
+
+<section id="favorites" class="page">
+
+<div class="card">
+<h2>⭐ Le mie prove</h2>
+<p class="muted">
+Qui trovi le prove che hai salvato.
+</p>
+</div>
+
+<div id="favoriteList"></div>
+
+</section>
+
+</main>
+
+
+<div class="bottom">
+
+<button class="active" onclick="showPage('home')">🏠<br>Home</button>
+
+<button onclick="showPage('mapPage')">🗺️<br>Mappa</button>
+
+<button onclick="showPage('stages')">🏁<br>Prove</button>
+
+<button onclick="showPage('shuttle')">🚌<br>Navette</button>
+
+<button onclick="showPage('favorites')">⭐<br>Preferiti</button>
+
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+
+/* ===========================
+   DATI PROVE
+=========================== */
+
+const stages = [
+
+{
+id:"laghi",
+name:"I Laghi",
+day:"venerdi",
+dayLabel:"Venerdì",
+km:"—",
+lat:43.96,
+lng:12.47,
+description:"Prova speciale spettacolare, reintrodotta nel programma 2026."
+},
+
+{
+id:"chiesanuova",
+name:"Chiesanuova",
+day:"venerdi",
+dayLabel:"Venerdì",
+km:"—",
+lat:43.96,
+lng:12.42,
+description:"Prova speciale nel territorio sammarinese."
+},
+
+{
+id:"sanmarino",
+name:"San Marino",
+day:"venerdi",
+dayLabel:"Venerdì",
+km:"—",
+lat:43.94,
+lng:12.45,
+description:"Una delle prove storiche dell'evento."
+},
+
+{
+id:"letane",
+name:"Le Tane",
+day:"sabato",
+dayLabel:"Sabato",
+km:"—",
+lat:43.93,
+lng:12.43,
+description:"Prova speciale Rallylegend."
+},
+
+{
+id:"lacasa",
+name:"La Casa",
+day:"sabato",
+dayLabel:"Sabato",
+km:"—",
+lat:43.91,
+lng:12.45,
+description:"Prova speciale Rallylegend."
+},
+
+{
+id:"thelegend",
+name:"The Legend",
+day:"sabato",
+dayLabel:"Sabato",
+km:"—",
+lat:43.96,
+lng:12.48,
+description:"La prova che ospiterà anche il Memorial Bettega."
+},
+
+{
+id:"piandavello",
+name:"Piandavello",
+day:"sabato",
+dayLabel:"Sabato",
+km:"—",
+lat:43.95,
+lng:12.39,
+description:"Prova speciale Rallylegend."
+},
+
+{
+id:"laghi2",
+name:"I Laghi",
+day:"sabato",
+dayLabel:"Sabato",
+km:"—",
+lat:43.96,
+lng:12.47,
+description:"Secondo passaggio / ripetizione."
+},
+
+{
+id:"chiesanuova2",
+name:"Chiesanuova",
+day:"domenica",
+dayLabel:"Domenica",
+km:"—",
+lat:43.96,
+lng:12.42,
+description:"Prova speciale della giornata finale."
+},
+
+{
+id:"thelegend2",
+name:"The Legend",
+day:"domenica",
+dayLabel:"Domenica",
+km:"2,88",
+lat:43.96,
+lng:12.48,
+description:"Percorso adattato per il Memorial Bettega."
+},
+
+{
+id:"piandavello2",
+name:"Piandavello",
+day:"domenica",
+dayLabel:"Domenica",
+km:"—",
+lat:43.95,
+lng:12.39,
+description:"Prova speciale della giornata finale."
+}
+
+];
+
+
+/* ===========================
+   PUNTI MAPPA
+=========================== */
+
+const mapPoints = [
+
+{
+type:"village",
+name:"Rallylegend Village",
+lat:43.965,
+lng:12.475,
+description:"Rallylegend Village"
+},
+
+{
+type:"bettega",
+name:"Memorial Bettega",
+lat:43.96,
+lng:12.48,
+description:"The Legend · Memorial Bettega"
+},
+
+{
+type:"shuttle",
+name:"Fermata navetta – Village",
+lat:43.965,
+lng:12.475,
+description:"Punto navetta principale"
+},
+
+{
+type:"parking",
+name:"Parcheggio – area Village",
+lat:43.967,
+lng:12.477,
+description:"Area parcheggio di riferimento"
+}
+
+];
+
+
+/* ===========================
+   NAVETTE
+=========================== */
+
+const shuttles = [
+
+{
+name:"Navette Rallylegend",
+info:"Servizio navette per il pubblico",
+days:"8–11 ottobre",
+status:"Da verificare con il programma ufficiale",
+lat:43.965,
+lng:12.475
+},
+
+{
+name:"Collegamento Village / Prove",
+info:"Collegamento previsto dal sistema navette",
+days:"Durante l'evento",
+status:"Orari e fermate ufficiali da inserire",
+lat:43.965,
+lng:12.475
+}
+
+];
+
+
+/* ===========================
+   PAGINE
+=========================== */
+
+function showPage(id){
+
+document.querySelectorAll(".page")
+.forEach(x=>x.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+document.querySelectorAll(".tab")
+.forEach(x=>x.classList.remove("active"));
+
+const tab=document.querySelector(
+`.tab[data-page="${id}"]`
+);
+
+if(tab) tab.classList.add("active");
+
+window.scrollTo(0,0);
+
+if(id==="mapPage"){
+setTimeout(()=>{
+map.invalidateSize();
+},200);
+}
+
+if(id==="favorites"){
+renderFavorites();
+}
+
+}
+
+
+/* ===========================
+   PROVE
+=========================== */
+
+function renderStages(){
+
+const search=
+document.getElementById("stageSearch")
+.value.toLowerCase();
+
+const day=
+document.getElementById("dayFilter")
+.value;
+
+const list=
+stages.filter(s=>{
+
+const matchSearch=
+s.name.toLowerCase().includes(search);
+
+const matchDay=
+day==="all" || s.day===day;
+
+return matchSearch && matchDay;
+
+});
+
+const container=
+document.getElementById("stageList");
+
+container.innerHTML="";
+
+list.forEach(s=>{
+
+const fav=
+getFavorites().includes(s.id);
+
+const div=
+document.createElement("div");
+
+div.className="card";
+
+div.innerHTML=`
+
+<button
+class="favorite ${fav?"on":""}"
+onclick="toggleFavorite('${s.id}')">
+${fav?"★":"☆"}
+</button>
+
+<h3>🏁 ${s.name}</h3>
+
+<div class="badge">${s.dayLabel}</div>
+
+${s.km!=="—"
+?`<div class="badge">${s.km} km</div>`
+:""}
+
+<p class="muted">${s.description}</p>
+
+<button
+class="action"
+onclick="navigateTo(${s.lat},${s.lng})">
+📍 NAVIGA ALLA PROVA
+</button>
+
+<button
+class="action secondary"
+onclick="openStageOnMap('${s.id}')">
+🗺️ MOSTRA SULLA MAPPA
+</button>
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* ===========================
+   PREFERITI
+=========================== */
+
+function getFavorites(){
+
+return JSON.parse(
+localStorage.getItem("rlFavorites") || "[]"
+);
+
+}
+
+function toggleFavorite(id){
+
+let fav=getFavorites();
+
+if(fav.includes(id)){
+fav=fav.filter(x=>x!==id);
+}else{
+fav.push(id);
+}
+
+localStorage.setItem(
+"rlFavorites",
+JSON.stringify(fav)
+);
+
+renderStages();
+renderFavorites();
+
+}
+
+function renderFavorites(){
+
+const fav=getFavorites();
+
+const container=
+document.getElementById("favoriteList");
+
+container.innerHTML="";
+
+if(!fav.length){
+
+container.innerHTML=
+`<div class="card">
+<p class="muted">
+Non hai ancora salvato nessuna prova.
+</p>
+</div>`;
+
+return;
+}
+
+stages
+.filter(s=>fav.includes(s.id))
+.forEach(s=>{
+
+const div=document.createElement("div");
+
+div.className="card";
+
+div.innerHTML=`
+
+<h3>⭐ ${s.name}</h3>
+
+<div class="badge">${s.dayLabel}</div>
+
+<p class="muted">${s.description}</p>
+
+<button
+class="action"
+onclick="navigateTo(${s.lat},${s.lng})">
+📍 NAVIGA
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* ===========================
+   MAPPA
+=========================== */
+
+const map=
+L.map("map").setView(
+[43.95,12.45],
+12
+);
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:"© OpenStreetMap"
+}
+).addTo(map);
+
+let markers=[];
+
+function clearMarkers(){
+
+markers.forEach(m=>map.removeLayer(m));
+markers=[];
+
+}
+
+function markerFor(type){
+
+if(type==="stage")
+return "🏁";
+
+if(type==="shuttle")
+return "🚌";
+
+if(type==="parking")
+return "🅿️";
+
+if(type==="village")
+return "🏟️";
+
+if(type==="bettega")
+return "🏆";
+
+return "📍";
+
+}
+
+function popup(title,text,lat,lng){
+
+return `
+<b>${markerFor(
+title==="Memorial Bettega"
+?"bettega"
+:title==="Rallylegend Village"
+?"village"
+:"stage"
+)} ${title}</b>
+
+<br>
+${text}
+
+<br><br>
+
+<button onclick="navigateTo(${lat},${lng})">
+Naviga
+</button>
+`;
+
+}
+
+function loadMap(){
+
+clearMarkers();
+
+const filter=
+document.getElementById("mapFilter").value;
+
+if(filter==="all" || filter==="stage"){
+
+stages.forEach(s=>{
+
+const m=
+L.marker([s.lat,s.lng])
+.addTo(map)
+.bindPopup(
+popup(
+s.name,
+s.description,
+s.lat,
+s.lng
+)
+);
+
+markers.push(m);
+
+});
+
+}
+
+if(filter==="all" || filter!=="stage"){
+
+mapPoints
+.filter(p=>
+filter==="all" || p.type===filter
+)
+.forEach(p=>{
+
+const m=
+L.marker([p.lat,p.lng])
+.addTo(map)
+.bindPopup(
+popup(
+p.name,
+p.description,
+p.lat,
+p.lng
+)
+);
+
+markers.push(m);
+
+});
+
+}
+
+}
+
+function filterMap(){
+loadMap();
+}
+
+function openStageOnMap(id){
+
+const s=
+stages.find(x=>x.id===id);
+
+showPage("mapPage");
+
+setTimeout(()=>{
+
+map.setView(
+[s.lat,s.lng],
+14
+);
+
+},250);
+
+}
+
+
+/* ===========================
+   GPS
+=========================== */
+
+function locateUser(){
+
+if(!navigator.geolocation){
+
+alert("La geolocalizzazione non è disponibile.");
+
+return;
+}
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+const lat=
+position.coords.latitude;
+
+const lng=
+position.coords.longitude;
+
+showPage("mapPage");
+
+setTimeout(()=>{
+
+map.setView(
+[lat,lng],
+15
+);
+
+L.marker([lat,lng])
+.addTo(map)
+.bindPopup("📍 Sei qui")
+.openPopup();
+
+},300);
+
+},
+
+()=>{
+alert(
+"Non è stato possibile ottenere la posizione."
+);
+}
+
+);
+
+}
+
+
+/* ===========================
+   NAVIGAZIONE
+=========================== */
+
+function navigateTo(lat,lng){
+
+const url=
+`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
+window.open(url,"_blank");
+
+}
+
+
+/* ===========================
+   NAVETTE
+=========================== */
+
+function renderShuttles(){
+
+const container=
+document.getElementById("shuttleList");
+
+container.innerHTML="";
+
+shuttles.forEach(s=>{
+
+const div=document.createElement("div");
+
+div.className="card nav-card";
+
+div.innerHTML=`
+
+<div>
+<h3>🚌 ${s.name}</h3>
+
+<p class="muted">
+${s.info}
+</p>
+
+<div class="badge">${s.days}</div>
+
+<div class="badge">${s.status}</div>
+</div>
+
+<button
+class="action"
+onclick="navigateTo(${s.lat},${s.lng})">
+📍
+</button>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* ===========================
+   TAB
+=========================== */
+
+document.querySelectorAll(".tab")
+.forEach(btn=>{
+
+btn.addEventListener(
+"click",
+()=>showPage(btn.dataset.page)
+);
+
+});
+
+
+/* ===========================
+   AVVIO
+=========================== */
+
+renderStages();
+renderFavorites();
+renderShuttles();
+loadMap();
+
+</script>
+
+</body>
+</html>
+```
